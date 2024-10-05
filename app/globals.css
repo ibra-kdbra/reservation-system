@@ -8,11 +8,35 @@ body,
   height: 100%;
 }
 
+::-webkit-scrollbar {
+  width: 0.5rem;
+  height: 0.5rem;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgb(191, 191, 191);
+  border-radius: 1rem;
+  transition: 0.25s;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(156, 156, 156);
+}
+
+::-webkit-scrollbar-track {
+  background-color: rgba(0, 0, 0, 0);
+}
+
 .leaflet-bottom,
 .leaflet-control,
 .leaflet-pane,
 .leaflet-top {
   z-index: 0 !important;
+}
+
+div,
+p {
+  user-select: none;
 }
 
 .rdrMonth {
