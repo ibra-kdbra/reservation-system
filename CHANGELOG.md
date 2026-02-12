@@ -1,95 +1,30 @@
-# Reservation System v2.0 - Global Changelog
+# Changelog
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+## [Unreleased] - 2026-02-12
 
-## [Unreleased]
+### Added
 
-### Phase 1: Project Foundation & Architecture
+- **Modular Listing Detail Components**:
+  - `apps/web/src/components/listing/ListingGallery.vue`: Airbnb-style 1+4 grid gallery.
+  - `apps/web/src/components/listing/ListingHeader.vue`: Integrated title, location, and action buttons.
+  - `apps/web/src/components/listing/ListingHost.vue`: Host profile section with stats and contact option.
+  - `apps/web/src/components/listing/ListingReviews.vue`: Multi-star rating breakdown and review list.
+  - `apps/web/src/components/listing/BookingWidget.vue`: Sticky booking sidebar with dynamic price calculation.
+  - `apps/web/src/components/listing/ListingMap.vue`: Map placeholder for property location.
 
-#### [2026-02-04] - Project Reorganization
+### Changed
 
-##### Changed
+- **UI/UX Polish**:
+  - `apps/web/src/views/listings/Detail.vue`: Completely overhauled the listing detail page to use modular components and premium styling.
+- **Data & Seeding**:
+  - `apps/api/prisma/seed.ts`: Enhanced seeding to generate realistic reviews for all listings.
+  - `apps/api/prisma/seed-data.ts`: Updated image sets with high-quality, authentic travel photos.
 
-- Moved all legacy Next.js files to `legacy_project/` directory
-- Consolidated v2 architecture files to main directory
-- Updated project structure for cleaner organization
+### Fixed
 
-##### Added
-
-- `legacy_project/README.md` - Documentation for deprecated code
-- `docs/REORGANIZATION.md` - Reorganization documentation
-
-#### [2026-02-04] - Project Initialization
-
-##### Added
-
-- Created monorepo structure with pnpm workspaces
-- Set up Turborepo for build orchestration
-- Created CHANGELOG system documentation
-- Initialized project with Vue.js + NestJS architecture
-- Created comprehensive implementation plan (8 phases)
-- Documented 150+ features across 12 categories
-- Set up master task tracking system
-
-##### Infrastructure
-
-- Prepared Docker development environment
-- Configured PostgreSQL, Redis, RabbitMQ services
-- Set up NGINX load balancer configuration
-
-##### Documentation
-
-- Created `CHANGELOG_SYSTEM.md` - Changelog methodology
-- Created `implementation_plan.md` - Complete re-engineering plan
-- Created `features.md` - Feature recommendations
-- Created `task.md` - Master task breakdown
-
----
-
-## Version History
-
-### [2.0.0] - TBD
-
-**Major Re-engineering Release**
-
-- Complete rewrite from Next.js to Vue.js + NestJS
-- Production-grade architecture for 500K-1M users
-- Comprehensive testing infrastructure
-- DevOps and CI/CD pipelines
-- 150+ new features
-
-### [1.0.0] - Previous Version
-
-**Legacy Next.js Application**
-
-- Basic reservation system
-- MongoDB + Prisma
-- NextAuth authentication
-- Limited features
-
----
-
-## Migration Notes
-
-This changelog tracks the v2.0 re-engineering project. For legacy system changes, see the old repository.
-
-**Migration Timeline**: 6-12 months
-**Current Phase**: Phase 1 - Foundation & Architecture
-**Status**: In Progress
-
----
-
-## Contributors
-
-- Antigravity (AI Assistant) - Architecture & Implementation
-- User - Product Owner & Requirements
-
----
-
-## Notes
-
-For detailed file-level changes, see individual changelogs in `/changelogs/` directory.
-For changelog system documentation, see `CHANGELOG_SYSTEM.md`.
+- **API Integration**:
+  - Resolved issue where reviews were not being fetched correctly on the detail page by using embedded review data from the listing fetching response.
+- **Seeding Types**:
+  - Fixed syntax and type errors in `seed.ts` related to duplicate declarations and Prisma relation mismatches.
