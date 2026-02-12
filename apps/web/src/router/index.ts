@@ -1,0 +1,92 @@
+import { createRouter, createWebHistory } from 'vue-router'
+import { useAuthStore } from '../stores/auth'
+
+const router = createRouter({
+  history: createWebHistory(import.meta.env.BASE_URL),
+  scrollBehavior(_to, _from, savedPosition) {
+    if (savedPosition) return savedPosition // back/forward button
+    return { top: 0, behavior: 'smooth' }
+  },
+  routes: [
+    {
+      path: '/',
+      name: 'home',
+      component: () => import('../views/Home.vue'),
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: () => import('../views/auth/Login.vue'),
+      meta: { requiresGuest: true },
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: () => import('../views/auth/Register.vue'),
+      meta: { requiresGuest: true },
+    },
+    {
+      path: '/listings/search',
+      name: 'search',
+      component: () => import('../views/listings/Search.vue'),
+    },
+    {
+      path: '/listings/:id',
+      name: 'listing-detail',
+      component: () => import('../views/listings/Detail.vue'),
+    },
+    {
+      path: '/bookings',
+      name: 'my-bookings',
+      component: () => import('../views/bookings/MyBookings.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: () => import('../views/profile/Profile.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/wishlist',
+      name: 'wishlist',
+      component: () => import('../views/wishlist/Wishlist.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/host/dashboard',
+      name: 'host-dashboard',
+      component: () => import('../views/host/HostDashboard.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/admin',
+      name: 'admin',
+      component: () => import('../views/admin/AdminDashboard.vue'),
+      meta: { requiresAuth: true, requiresAdmin: true },
+    },
+  ],
+})
+
+// Navigation guards
+router.beforeEach((to, from, next) => {
+  const authStore = useAuthStore()
+
+  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
+    next({ name: 'login', query: { redirect: to.fullPath } })
+    return
+  }
+
+  if (to.meta.requiresAdmin && authStore.user?.role !== 'ADMIN') {
+    next({ name: 'home' })
+    return
+  }
+  
+  if (to.meta.requiresGuest && authStore.isAuthenticated) {
+    next({ name: 'home' })
+  } else {
+    next()
+  }
+})
+
+export default router
