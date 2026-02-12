@@ -40,23 +40,10 @@
           <ListingHost :host="listing.host" :review-count="124" :is-superhost="true" />
 
           <!-- Description -->
-          <div class="section description-section">
-            <h2 class="section-title">About this place</h2>
-            <p class="description-text">{{ listing.description }}</p>
-            <button class="show-more-btn">Show more</button>
-          </div>
+          <ListingDescription :description="listing.description" />
 
           <!-- Amenities -->
-          <div class="section amenities-section" v-if="listing.amenities?.length">
-            <h2 class="section-title">What this place offers</h2>
-            <div class="amenities-grid">
-              <div v-for="la in listing.amenities" :key="la.id" class="amenity-item">
-                <span class="amenity-icon">{{ la.amenity?.icon || '✓' }}</span>
-                <span>{{ la.amenity?.name || la.name }}</span>
-              </div>
-            </div>
-            <button class="show-all-amenities">Show all {{ listing.amenities.length }} amenities</button>
-          </div>
+          <ListingAmenities :amenities="listing.amenities" />
 
           <!-- Reviews -->
           <ListingReviews v-if="listing.reviewCount > 0" :reviews="reviews" :rating="listing.averageRating"
@@ -95,6 +82,8 @@ import { useToast } from '../../composables/useToast'
 import ListingHeader from '../../components/listing/ListingHeader.vue'
 import ListingGallery from '../../components/listing/ListingGallery.vue'
 import ListingHost from '../../components/listing/ListingHost.vue'
+import ListingDescription from '../../components/listing/ListingDescription.vue'
+import ListingAmenities from '../../components/listing/ListingAmenities.vue'
 import ListingReviews from '../../components/listing/ListingReviews.vue'
 import ListingMap from '../../components/listing/ListingMap.vue'
 import BookingWidget from '../../components/listing/BookingWidget.vue'
