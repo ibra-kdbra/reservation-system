@@ -6,6 +6,16 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- **Payment & Checkout Flow**:
+  - `apps/web/src/views/bookings/Checkout.vue`: Full checkout page with booking summary, mock credit card form, and simulated payment processing.
+  - `apps/web/src/views/bookings/BookingConfirmation.vue`: Post-booking success page with animated checkmark and booking details.
+  - New routes: `/checkout/:listingId` and `/bookings/confirmation/:bookingId`.
+
+- **Interactive UI Components**:
+  - `apps/web/src/components/listing/ListingDescription.vue`: Expand/collapse description with "Show more/less".
+  - `apps/web/src/components/listing/ListingAmenities.vue`: Amenities modal for viewing full list.
+  - Updated `ListingReviews.vue` with "Show all reviews" modal.
+
 - **Modular Listing Detail Components**:
   - `apps/web/src/components/listing/ListingGallery.vue`: Airbnb-style 1+4 grid gallery.
   - `apps/web/src/components/listing/ListingHeader.vue`: Integrated title, location, and action buttons.
