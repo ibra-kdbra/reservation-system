@@ -1,0 +1,6 @@
+{
+  "mtu": 1300,
+  "dns": ["1.1.1.1", "8.8.8.8"],
+  "registry-mirrors": ["https://mirror.gcr.io"],
+  "max-concurrent-downloads": 1
+}
