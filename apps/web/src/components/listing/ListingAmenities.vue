@@ -11,7 +11,7 @@
             Show all {{ amenities.length }} amenities
         </button>
 
-        <!-- Modal --> // Teleport to body for better stacking context
+        <!-- Modal -->
         <Teleport to="body">
             <div v-if="isOpen" class="modal-overlay" @click="isOpen = false">
                 <div class="modal-content" @click.stop>
