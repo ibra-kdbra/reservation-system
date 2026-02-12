@@ -36,9 +36,21 @@ const router = createRouter({
       component: () => import('../views/listings/Detail.vue'),
     },
     {
+      path: '/checkout/:listingId',
+      name: 'checkout',
+      component: () => import('../views/bookings/Checkout.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
       path: '/bookings',
       name: 'my-bookings',
       component: () => import('../views/bookings/MyBookings.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/bookings/confirmation/:bookingId',
+      name: 'booking-confirmation',
+      component: () => import('../views/bookings/BookingConfirmation.vue'),
       meta: { requiresAuth: true },
     },
     {

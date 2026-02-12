@@ -162,7 +162,19 @@ function handleBook() {
     router.push({ name: 'login', query: { redirect: route.fullPath } })
     return
   }
-  toast.success('Booking request sent! 🎉')
+  if (!bookingCheckIn.value || !bookingCheckOut.value) {
+    toast.warning('Please select check-in and check-out dates')
+    return
+  }
+  router.push({
+    name: 'checkout',
+    params: { listingId: listing.value.id },
+    query: {
+      checkIn: bookingCheckIn.value,
+      checkOut: bookingCheckOut.value,
+      guests: String(bookingGuests.value),
+    },
+  })
 }
 </script>
 
