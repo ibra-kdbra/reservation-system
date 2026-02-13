@@ -3,9 +3,7 @@
         <div class="container">
             <!-- Back Link -->
             <button class="back-link" @click="router.back()">
-                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none">
-                    <polyline points="15 18 9 12 15 6"></polyline>
-                </svg>
+                <ChevronLeft :size="20" />
                 Request to book
             </button>
 
@@ -19,7 +17,7 @@
 
                         <div class="trip-detail">
                             <div class="trip-detail-header">
-                                <div>
+                                <div class="trip-info">
                                     <h3>Dates</h3>
                                     <p>{{ formattedCheckIn }} – {{ formattedCheckOut }}</p>
                                 </div>
@@ -29,7 +27,7 @@
 
                         <div class="trip-detail">
                             <div class="trip-detail-header">
-                                <div>
+                                <div class="trip-info">
                                     <h3>Guests</h3>
                                     <p>{{ guests }} guest{{ guests > 1 ? 's' : '' }}</p>
                                 </div>
@@ -40,39 +38,54 @@
 
                     <!-- Payment Method -->
                     <section class="checkout-section">
-                        <h2 class="section-title">Pay with</h2>
-
-                        <div class="card-form">
+                        <div class="payment-header">
+                            <h2 class="section-title">Pay with</h2>
                             <div class="card-brands">
-                                <img src="https://cdn.jsdelivr.net/gh/nicehash/design-system@1.7.4/dist/assets/img/payment/visa.svg"
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg"
                                     alt="Visa" class="brand-icon" />
-                                <img src="https://cdn.jsdelivr.net/gh/nicehash/design-system@1.7.4/dist/assets/img/payment/mastercard.svg"
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg"
                                     alt="Mastercard" class="brand-icon" />
-                                <img src="https://cdn.jsdelivr.net/gh/nicehash/design-system@1.7.4/dist/assets/img/payment/american-express.svg"
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/3/30/American_Express_logo.svg"
                                     alt="Amex" class="brand-icon" />
                             </div>
+                        </div>
 
+                        <div class="card-form">
                             <div class="form-group full-width">
                                 <label>Card number</label>
-                                <input v-model="cardNumber" type="text" placeholder="1234 5678 9012 3456" maxlength="19"
-                                    @input="formatCardNumber" />
+                                <div class="input-icon-wrapper">
+                                    <CreditCard class="input-icon" :size="18" />
+                                    <input v-model="cardNumber" type="text" placeholder="0000 0000 0000 0000"
+                                        maxlength="19" class="input-with-icon" @input="formatCardNumber" />
+                                </div>
                             </div>
 
                             <div class="form-row">
                                 <div class="form-group">
                                     <label>Expiration</label>
-                                    <input v-model="cardExpiry" type="text" placeholder="MM / YY" maxlength="7"
-                                        @input="formatExpiry" />
+                                    <div class="input-icon-wrapper">
+                                        <Calendar class="input-icon" :size="18" />
+                                        <input v-model="cardExpiry" type="text" placeholder="MM / YY" maxlength="7"
+                                            class="input-with-icon" @input="formatExpiry" />
+                                    </div>
                                 </div>
                                 <div class="form-group">
                                     <label>CVV</label>
-                                    <input v-model="cardCvv" type="text" placeholder="123" maxlength="4" />
+                                    <div class="input-icon-wrapper">
+                                        <Lock class="input-icon" :size="18" />
+                                        <input v-model="cardCvv" type="text" placeholder="123" maxlength="4"
+                                            class="input-with-icon" />
+                                    </div>
                                 </div>
                             </div>
 
                             <div class="form-group full-width">
                                 <label>Cardholder name</label>
-                                <input v-model="cardName" type="text" placeholder="Name on card" />
+                                <div class="input-icon-wrapper">
+                                    <User class="input-icon" :size="18" />
+                                    <input v-model="cardName" type="text" placeholder="Name on card"
+                                        class="input-with-icon" />
+                                </div>
                             </div>
                         </div>
                     </section>
@@ -88,7 +101,8 @@
                     <section class="checkout-section">
                         <h2 class="section-title">Cancellation policy</h2>
                         <p class="policy-text">
-                            Free cancellation before check-in. Cancel before check-in for a full refund.
+                            <strong>Free cancellation before check-in.</strong> Cancel before check-in for a full
+                            refund.
                             After that, the first night is non-refundable, but 50% of the remaining nights will be
                             refunded.
                         </p>
@@ -103,8 +117,16 @@
                         </p>
                         <button class="confirm-btn" :disabled="!isFormValid || isProcessing" @click="confirmBooking">
                             <span v-if="isProcessing" class="spinner"></span>
-                            <span v-else>Confirm and pay</span>
+                            <span v-else class="btn-content">
+                                <ShieldCheck :size="20" />
+                                Confirm and pay
+                            </span>
                         </button>
+
+                        <div class="secure-badge">
+                            <Lock :size="14" />
+                            <span>Payments are secure and encrypted</span>
+                        </div>
 
                         <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
                     </section>
@@ -115,17 +137,15 @@
                     <div class="summary-card">
                         <!-- Listing Preview -->
                         <div class="listing-preview" v-if="listing">
-                            <img :src="listing.coverImage || listing.images?.[0]" :alt="listing.title"
-                                class="listing-thumb" />
+                            <div class="listing-thumb-wrapper">
+                                <img :src="listing.coverImage || listing.images?.[0]" :alt="listing.title"
+                                    class="listing-thumb" />
+                            </div>
                             <div class="listing-info">
                                 <p class="listing-type">{{ listing.propertyType }}</p>
                                 <h3 class="listing-title">{{ listing.title }}</h3>
                                 <div class="listing-rating" v-if="listing.averageRating">
-                                    <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
-                                        <path
-                                            d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z">
-                                        </path>
-                                    </svg>
+                                    <Star :size="12" fill="currentColor" class="star-icon" />
                                     <span>{{ listing.averageRating }} ({{ listing.reviewCount }})</span>
                                 </div>
                             </div>
@@ -138,7 +158,7 @@
                         <div class="price-rows">
                             <div class="price-row">
                                 <span>{{ formatCurrency(pricePerNight) }} x {{ nights }} night{{ nights > 1 ? 's' : ''
-                                    }}</span>
+                                }}</span>
                                 <span>{{ formatCurrency(pricePerNight * nights) }}</span>
                             </div>
                             <div class="price-row" v-if="cleaningFee">
@@ -170,6 +190,9 @@ import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '../../stores/auth'
 import { api } from '../../api/client'
 import { useToast } from '../../composables/useToast'
+import {
+    ChevronLeft, CreditCard, Calendar, Lock, User, ShieldCheck, Star
+} from 'lucide-vue-next'
 
 const route = useRoute()
 const router = useRouter()
@@ -309,7 +332,7 @@ async function confirmBooking() {
 .back-link {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 4px;
     font-size: var(--font-size-2xl);
     font-weight: 600;
     color: var(--color-gray-900);
@@ -318,10 +341,11 @@ async function confirmBooking() {
     cursor: pointer;
     padding: 0;
     margin-bottom: var(--spacing-2xl);
+    transition: color 0.2s;
 }
 
 .back-link:hover {
-    text-decoration: underline;
+    color: var(--color-primary-600);
 }
 
 .checkout-layout {
@@ -356,17 +380,17 @@ async function confirmBooking() {
 .trip-detail-header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
 }
 
-.trip-detail h3 {
+.trip-info h3 {
     font-size: var(--font-size-base);
     font-weight: 600;
     color: var(--color-gray-900);
     margin: 0 0 4px 0;
 }
 
-.trip-detail p {
+.trip-info p {
     font-size: var(--font-size-sm);
     color: var(--color-gray-600);
     margin: 0;
@@ -382,31 +406,42 @@ async function confirmBooking() {
     cursor: pointer;
 }
 
-/* Card Form */
-.card-form {
+/* Payment Section */
+.payment-header {
     display: flex;
-    flex-direction: column;
-    gap: var(--spacing-md);
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+}
+
+.payment-header .section-title {
+    margin-bottom: 0;
 }
 
 .card-brands {
     display: flex;
     gap: 8px;
-    margin-bottom: var(--spacing-sm);
 }
 
 .brand-icon {
-    height: 28px;
+    height: 24px;
     width: auto;
+}
+
+.card-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    background: white;
+    padding: var(--spacing-lg);
     border: 1px solid var(--color-gray-200);
-    border-radius: var(--radius-sm);
-    padding: 2px 4px;
+    border-radius: var(--radius-lg);
 }
 
 .form-group {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 6px;
 }
 
 .form-group label {
@@ -417,13 +452,32 @@ async function confirmBooking() {
     letter-spacing: 0.05em;
 }
 
+.input-icon-wrapper {
+    position: relative;
+}
+
+.input-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-gray-400);
+    pointer-events: none;
+}
+
 .form-group input {
+    width: 100%;
     padding: 12px 14px;
     border: 1px solid var(--color-gray-300);
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-md);
     font-size: var(--font-size-base);
-    transition: border-color 0.2s;
+    transition: all 0.2s;
     outline: none;
+    box-sizing: border-box;
+}
+
+.input-with-icon {
+    padding-left: 40px !important;
 }
 
 .form-group input:focus {
@@ -447,7 +501,8 @@ async function confirmBooking() {
     font-family: inherit;
     resize: vertical;
     outline: none;
-    transition: border-color 0.2s;
+    transition: all 0.2s;
+    box-sizing: border-box;
 }
 
 .special-requests:focus {
@@ -488,7 +543,13 @@ async function confirmBooking() {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
+    margin-bottom: var(--spacing-md);
+}
+
+.btn-content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .confirm-btn:hover:not(:disabled) {
@@ -501,6 +562,15 @@ async function confirmBooking() {
     cursor: not-allowed;
     transform: none;
     box-shadow: none;
+}
+
+.secure-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
 }
 
 .spinner {
@@ -523,6 +593,7 @@ async function confirmBooking() {
     color: #e53e3e;
     font-size: var(--font-size-sm);
     font-weight: 500;
+    text-align: center;
 }
 
 /* Sidebar */
@@ -545,12 +616,18 @@ async function confirmBooking() {
     margin-bottom: var(--spacing-md);
 }
 
-.listing-thumb {
-    width: 130px;
-    height: 100px;
-    object-fit: cover;
+.listing-thumb-wrapper {
+    width: 120px;
+    height: 90px;
     border-radius: var(--radius-lg);
+    overflow: hidden;
     flex-shrink: 0;
+}
+
+.listing-thumb {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .listing-info {
@@ -574,9 +651,11 @@ async function confirmBooking() {
     font-weight: 600;
     color: var(--color-gray-900);
     margin: 0;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
     overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
 }
 
 .listing-rating {
@@ -585,6 +664,10 @@ async function confirmBooking() {
     gap: 4px;
     font-size: var(--font-size-xs);
     color: var(--color-gray-700);
+}
+
+.star-icon {
+    color: var(--color-gray-900);
 }
 
 .divider {

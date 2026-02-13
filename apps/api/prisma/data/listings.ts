@@ -1,4 +1,3 @@
-
 export const listingsData = [
     // ── Japan ──
     {
@@ -359,11 +358,11 @@ export const listingsData = [
       // No new images for Singapore in text, keep existing? Or use generic high quality?
       // Text file has none. Keep existing.
       coverImage:
-        'https://pic2.99.co/v3/YKSPXGXPbgxhMN9yCtx2LA?height=600&width=800&mode=fill&quality=80&convert_if_png=true',
+        'https://d1hy6t2xeg0mdl.cloudfront.net/image/670359/be7f9df57c/720-width',
       images: [
-        'https://pic2.99.co/v3/YKSPXGXPbgxhMN9yCtx2LA?height=600&width=800&mode=fill&quality=80&convert_if_png=true', // High-end kitchen/living
-        'https://pic2.99.co/v3/e9MYyai5x4gN2DtCTKJ69V?height=600&width=800&mode=fill&quality=80&convert_if_png=true',  // Bedroom
-        'https://pic2.99.co/v3/R92bgaaNH7gMfCKbjHWjM4?height=600&width=800&mode=fill&quality=80&convert_if_png=true', // View
+        'https://d1hy6t2xeg0mdl.cloudfront.net/image/670359/be7f9df57c/720-width', // Living Room/View
+        'https://d1hy6t2xeg0mdl.cloudfront.net/image/670359/be7f9df57c/720-width', // Bedroom
+        'https://d1hy6t2xeg0mdl.cloudfront.net/image/670349/d570e85077/720-width', // Kitchen
       ],
       amenityNames: ['WiFi', 'Air Conditioning', 'Pool', 'Gym', 'Kitchen', 'City Skyline View', 'Concierge Service', 'Washer', 'TV'],
       hostIndex: 1, // host2 (Mei)
@@ -798,51 +797,22 @@ export const listingsData = [
       address: 'Punakha Valley, Bhutan',
       latitude: 27.59,
       longitude: 89.87,
-      pricePerNight: 200,
+      pricePerNight: 160,
       cleaningFee: 30,
       serviceFee: 20,
       maxGuests: 4,
       bedrooms: 2,
-      beds: 2,
+      beds: 3,
       bathrooms: 1,
       instantBook: false,
       coverImage:
-        'https://a0.muscache.com/im/pictures/8045ed9e-94fb-4c22-a076-caa815a12608.jpg?im_w=720',
+        'https://a0.muscache.com/im/pictures/hosting/Hosting-53857647/original/038ec66d-1756-42d4-b46b-29a399f9392e.jpeg?im_w=720',
       images: [
-        'https://a0.muscache.com/im/pictures/8045ed9e-94fb-4c22-a076-caa815a12608.jpg?im_w=720',
-        'https://a0.muscache.com/im/pictures/57a33508-ef36-45e6-8283-f607a56e41d4.jpg?im_w=720',
-        'https://a0.muscache.com/im/pictures/e09151d5-65e1-4253-95d5-13fb773a9871.jpg?im_w=720',
+        'https://a0.muscache.com/im/pictures/hosting/Hosting-53857647/original/038ec66d-1756-42d4-b46b-29a399f9392e.jpeg?im_w=720',
+        'https://a0.muscache.com/im/pictures/hosting/Hosting-53857647/original/f8b9e607-f12a-4428-8687-f83424d8525b.jpeg?im_w=720',
+        'https://a0.muscache.com/im/pictures/hosting/Hosting-53857647/original/234f95e5-3974-4b44-9fa7-640a33118546.jpeg?im_w=720',
       ],
-      amenityNames: ['WiFi', 'Kitchen', 'Garden', 'Hot Tub', 'Breakfast Included'],
+      amenityNames: ['WiFi', 'Kitchen', 'Garden', 'Hot Tub'],
       hostIndex: 1,
-    },
-    {
-      title: 'Maldives Overwater Villa',
-      description:
-        'Isolationist luxury in Noonu Atoll. Overwater bungalow with thatch roof, glass floor panels, and direct ocean access ladder. Includes plunge pool.',
-      propertyType: 'VILLA' as const,
-      status: 'PUBLISHED' as const,
-      country: 'Maldives',
-      city: 'Noonu Atoll',
-      address: 'Noonu Atoll, Maldives',
-      latitude: 5.86,
-      longitude: 73.2,
-      pricePerNight: 850,
-      cleaningFee: 100,
-      serviceFee: 80,
-      maxGuests: 2,
-      bedrooms: 1,
-      beds: 1,
-      bathrooms: 1,
-      instantBook: true,
-      coverImage:
-        'https://www.sunsiyam.com/media/idqdoi4m/ssif-water_villa-with-pool-10.jpg?center=0.33719945874711843,0.79206138266912152&mode=crop&quality=90&width=1640&height=705',
-      images: [
-        'https://www.sunsiyam.com/media/idqdoi4m/ssif-water_villa-with-pool-10.jpg?center=0.33719945874711843,0.79206138266912152&mode=crop&quality=90&width=1640&height=705',
-        'https://www.sunsiyam.com/media/ouqaxqly/ssif-water_-villa-with-pool-interior-01.jpg',
-        'https://www.sunsiyam.com/media/4y5j5m1w/ssif-water_-villa-with-pool-7.jpg',
-      ],
-      amenityNames: ['WiFi', 'Pool', 'Tea Ceremony Set', 'Concierge Service', 'Spa Access', 'Ocean View'],
-      hostIndex: 1,
-    },
-  ];
+    }
+];

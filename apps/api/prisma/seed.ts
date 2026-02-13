@@ -2,7 +2,10 @@ import { PrismaClient } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { Pool } from 'pg';
 import * as bcrypt from 'bcrypt';
-import { listingsData } from './seed-data';
+import { listingsData } from './data/listings';
+import { hostsData, guestsData } from './data/users';
+import { amenityData } from './data/amenities';
+import { reviewTexts } from './data/reviews';
 
 const connectionString =
   process.env.DATABASE_URL ||
@@ -33,138 +36,46 @@ async function main() {
   // ─── Users ───────────────────────────────────────
   const hashedPassword = await bcrypt.hash('password123', 10);
 
-  const host = await prisma.user.create({
-    data: {
-      email: 'host@example.com',
-      password: hashedPassword,
-      firstName: 'Yuki',
-      lastName: 'Tanaka',
-      username: 'yukit',
-      bio: 'Superhost from Kyoto with 8 years of hospitality experience. I share authentic Japanese culture through my properties.',
-      role: 'HOST',
-      status: 'ACTIVE',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Yuki',
-    },
-  });
+  const hosts = [];
+  for (const hostData of hostsData) {
+    const host = await prisma.user.create({
+      data: {
+        ...hostData,
+        password: hashedPassword,
+      },
+    });
+    hosts.push(host);
+  }
 
-  const guest = await prisma.user.create({
-    data: {
-      email: 'guest@example.com',
-      password: hashedPassword,
-      firstName: 'Priya',
-      lastName: 'Sharma',
-      username: 'priyas',
-      bio: 'Avid traveller exploring hidden gems across Asia.',
-      role: 'USER',
-      status: 'ACTIVE',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Priya',
-    },
-  });
+  const guests = [];
+  for (const guestData of guestsData) {
+    const guest = await prisma.user.create({
+      data: {
+        ...guestData,
+        password: hashedPassword,
+      },
+    });
+    guests.push(guest);
+  }
 
-  const host2 = await prisma.user.create({
-    data: {
-      email: 'host2@example.com',
-      password: hashedPassword,
-      firstName: 'Mei',
-      lastName: 'Chen',
-      username: 'meic',
-      bio: 'Hospitality professional managing luxury stays in Southeast Asia. Passionate about sharing local culture.',
-      role: 'HOST',
-      status: 'ACTIVE',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Mei',
-    },
-  });
-
-  const host3 = await prisma.user.create({
-    data: {
-      email: 'host3@example.com',
-      password: hashedPassword,
-      firstName: 'Soo-Jin',
-      lastName: 'Park',
-      username: 'soojinp',
-      bio: 'Seoul-based interior designer turned Superhost. Every room tells a story.',
-      role: 'HOST',
-      status: 'ACTIVE',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=SooJin',
-    },
-  });
-
-  const guest2 = await prisma.user.create({
-    data: {
-      email: 'guest2@example.com',
-      password: hashedPassword,
-      firstName: 'Kenji',
-      lastName: 'Sato',
-      username: 'kenjis',
-      bio: 'Photographer exploring Asia one city at a time.',
-      role: 'USER',
-      status: 'ACTIVE',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Kenji',
-    },
-  });
-
-  const guest3 = await prisma.user.create({
-    data: {
-      email: 'guest3@example.com',
-      password: hashedPassword,
-      firstName: 'Ananya',
-      lastName: 'Patel',
-      username: 'ananyap',
-      bio: 'Food and culture enthusiast discovering authentic stays.',
-      role: 'USER',
-      status: 'ACTIVE',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Ananya',
-    },
-  });
-
-  // Array to map hostIndex from seed-data to actual host objects
-  const hosts = [host, host2, host3];
-
-  console.log('✅ Created users');
+  console.log(`✅ Created ${hosts.length} hosts and ${guests.length} guests`);
 
   // ─── Amenities ───────────────────────────────────
-  const amenityData = [
-    { name: 'WiFi', icon: '📶', category: 'Basic' },
-    { name: 'Air Conditioning', icon: '❄️', category: 'Basic' },
-    { name: 'Kitchen', icon: '🍳', category: 'Basic' },
-    { name: 'Washer', icon: '🧺', category: 'Basic' },
-    { name: 'TV', icon: '📺', category: 'Entertainment' },
-    { name: 'Pool', icon: '🏊', category: 'Leisure' },
-    { name: 'Gym', icon: '🏋️', category: 'Leisure' },
-    { name: 'Parking', icon: '🅿️', category: 'Basic' },
-    { name: 'Hot Tub', icon: '♨️', category: 'Leisure' },
-    { name: 'Workspace', icon: '💻', category: 'Basic' },
-    { name: 'Security Camera', icon: '📷', category: 'Safety' },
-    { name: 'First Aid Kit', icon: '🩹', category: 'Safety' },
-    { name: 'Fire Extinguisher', icon: '🧯', category: 'Safety' },
-    { name: 'Smoke Detector', icon: '🔔', category: 'Safety' },
-    // Asian amenities
-    { name: 'Tatami Room', icon: '🎋', category: 'Cultural' },
-    { name: 'Onsen / Hot Spring', icon: '♨️', category: 'Cultural' },
-    { name: 'Tea Ceremony Set', icon: '🍵', category: 'Cultural' },
-    { name: 'Temple View', icon: '⛩️', category: 'Views' },
-    { name: 'Rice Field View', icon: '🌾', category: 'Views' },
-    { name: 'City Skyline View', icon: '🌇', category: 'Views' },
-    { name: 'Yoga Space', icon: '🧘', category: 'Wellness' },
-    { name: 'Spa Access', icon: '💆', category: 'Wellness' },
-    { name: 'Bicycle Rental', icon: '🚲', category: 'Transport' },
-    { name: 'Airport Shuttle', icon: '🚐', category: 'Transport' },
-    { name: 'Rooftop Terrace', icon: '🏙️', category: 'Leisure' },
-    { name: 'Garden', icon: '🌿', category: 'Leisure' },
-    { name: 'Balcony', icon: '🏞️', category: 'Leisure' },
-    { name: 'Concierge Service', icon: '🛎️', category: 'Service' },
-  ];
-
   const amenities: Record<string, any> = {};
   for (const a of amenityData) {
-    amenities[a.name] = await prisma.amenity.create({ data: a });
+    const category = (a as any).category || 'Basic';
+    amenities[a.name] = await prisma.amenity.create({ 
+        data: {
+            name: a.name,
+            icon: a.icon,
+            category: category
+        } 
+    });
   }
 
   console.log('✅ Created amenities');
 
-
-  // Listings data is now imported from seed-data.ts
-
+  // ─── Listings ────────────────────────────────────
   const listings = [];
   for (const data of listingsData) {
     const { amenityNames, hostIndex, ...listingFields } = data;
@@ -198,7 +109,6 @@ async function main() {
   console.log(`✅ Created ${listings.length} listings`);
 
   // ─── Bookings ────────────────────────────────────
-  const guests = [guest, guest2, guest3];
   const bookingStatuses = ['COMPLETED', 'CONFIRMED', 'CONFIRMED', 'COMPLETED', 'COMPLETED'] as const;
 
   const bookings = [];
@@ -234,22 +144,7 @@ async function main() {
 
   console.log(`✅ Created ${bookings.length} bookings`);
 
-
-
   // ─── Reviews ─────────────────────────────────────
-  const reviewTexts = [
-    'Absolutely stunning property. The interior design was impeccable and every detail had been thought through. Would book again in a heartbeat.',
-    'Perfect location and beautifully maintained rooms. The host was incredibly responsive and left us a lovely welcome basket. Highly recommended.',
-    'We loved every moment of our stay. The bed was supremely comfortable, the kitchen well-equipped, and the views were breathtaking.',
-    'Exceptional hospitality. The space was even more beautiful than the photos suggest. Spotlessly clean with luxurious touches throughout.',
-    'A gem of a find! Quiet neighborhood, gorgeous interiors, and the host went above and beyond to make us feel at home.',
-    'The amenities were top-notch and the attention to cultural detail really made this stay special. The tatami room was an unforgettable experience.',
-    'Great value for the quality offered. Modern, clean, and centrally located. The rooftop terrace was a wonderful bonus.',
-    'One of the best stays we have had in Asia. The pool overlooking the rice terraces was magical at sunset.',
-    'Charming space with real character. Loved the mix of traditional architecture and modern comforts. Will definitely return.',
-    'Professional host, immaculate room, and a location that cannot be beaten. Public transport right at the doorstep.',
-  ];
-
   // Generate reviews for ALL listings
   for (const listing of listings) {
     // Generate 3-8 reviews per listing
@@ -258,10 +153,7 @@ async function main() {
     for (let i = 0; i < reviewCount; i++) {
         const guest = guests[Math.floor(Math.random() * guests.length)];
         
-    for (let i = 0; i < reviewCount; i++) {
-        const guest = guests[Math.floor(Math.random() * guests.length)];
-        
-        // Create a completed booking first
+        // Create a completed booking first (phantom booking for review validity)
         const pastBooking = await prisma.booking.create({
           data: {
             guestId: guest.id,
@@ -298,24 +190,28 @@ async function main() {
   console.log('✅ Created reviews');
 
   // ─── Notifications ───────────────────────────────
-  await prisma.notification.create({
-    data: {
-      userId: guest.id,
-      type: 'BOOKING_CONFIRMED',
-      title: 'Booking Confirmed',
-      message: 'Your stay at the Shibuya Modern Apartment has been confirmed!',
-    },
-  });
+  // Use first guest and first host for sample notifications
+  if (guests.length > 0) {
+      await prisma.notification.create({
+        data: {
+          userId: guests[0].id,
+          type: 'BOOKING_CONFIRMED',
+          title: 'Booking Confirmed',
+          message: 'Your stay at the Shibuya Modern Apartment has been confirmed!',
+        },
+      });
+  }
 
-  await prisma.notification.create({
-    data: {
-      userId: host.id,
-      type: 'BOOKING_REQUEST',
-      title: 'New Booking Request',
-      message: 'Priya Sharma has requested to book your Kyoto Machiya Townhouse.',
-    },
-  });
-}
+  if (hosts.length > 0) {
+      await prisma.notification.create({
+        data: {
+          userId: hosts[0].id,
+          type: 'BOOKING_REQUEST',
+          title: 'New Booking Request',
+          message: 'Priya Sharma has requested to book your Kyoto Machiya Townhouse.',
+        },
+      });
+  }
 }
 
 main()
