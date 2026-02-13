@@ -359,11 +359,11 @@ export const listingsData = [
       // No new images for Singapore in text, keep existing? Or use generic high quality?
       // Text file has none. Keep existing.
       coverImage:
-        'https://images.pexels.com/photos/2416592/pexels-photo-2416592.jpeg?auto=compress&cs=tinysrgb&w=1280',
+        'https://pic2.99.co/v3/YKSPXGXPbgxhMN9yCtx2LA?height=600&width=800&mode=fill&quality=80&convert_if_png=true',
       images: [
-        'https://images.pexels.com/photos/2416592/pexels-photo-2416592.jpeg?auto=compress&cs=tinysrgb&w=1280', // High-end kitchen/living
-        'https://images.pexels.com/photos/262048/pexels-photo-262048.jpeg?auto=compress&cs=tinysrgb&w=1280',  // Luxury bedroom
-        'https://images.pexels.com/photos/2736139/pexels-photo-2736139.jpeg?auto=compress&cs=tinysrgb&w=1280', // Modern details
+        'https://pic2.99.co/v3/YKSPXGXPbgxhMN9yCtx2LA?height=600&width=800&mode=fill&quality=80&convert_if_png=true', // High-end kitchen/living
+        'https://pic2.99.co/v3/e9MYyai5x4gN2DtCTKJ69V?height=600&width=800&mode=fill&quality=80&convert_if_png=true',  // Bedroom
+        'https://pic2.99.co/v3/R92bgaaNH7gMfCKbjHWjM4?height=600&width=800&mode=fill&quality=80&convert_if_png=true', // View
       ],
       amenityNames: ['WiFi', 'Air Conditioning', 'Pool', 'Gym', 'Kitchen', 'City Skyline View', 'Concierge Service', 'Washer', 'TV'],
       hostIndex: 1, // host2 (Mei)
@@ -718,11 +718,11 @@ export const listingsData = [
       beds: 3,
       bathrooms: 1,
       instantBook: true,
-      coverImage: 'https://royal-gate-yurt.asanomad.com/assets/img/slider/1.jpg',
+      coverImage: 'https://cf.bstatic.com/xdata/images/hotel/max1024x768/270493176.jpg?k=59940b8daebcd98caa74d7efdc258692b7da100beb19edf3b7331bfc9871118c&o=',
       images: [
-        'https://royal-gate-yurt.asanomad.com/assets/img/slider/1.jpg',
-        'https://royal-gate-yurt.asanomad.com/assets/img/gallery/4.jpg',
-        'https://media.istockphoto.com/id/500593732/photo/yurt-camp-at-lake-issyk-kul-kyrgyzstan.jpg?s=612x612&w=0&k=20&c=XUaJ4qL5J4qL5',
+        'https://cf.bstatic.com/xdata/images/hotel/max1024x768/270493176.jpg?k=59940b8daebcd98caa74d7efdc258692b7da100beb19edf3b7331bfc9871118c&o=',
+        'https://cf.bstatic.com/xdata/images/hotel/max1024x768/269700404.jpg?k=d5001c5db3bd4bbc7324fddf7769b706f9707393da366c5720062a04e5ee7ef4&o=',
+        'https://cf.bstatic.com/xdata/images/hotel/max1024x768/270493318.jpg?k=360dc9a4bf1c999e6a4ae44ed5509187bee24ac12e4f36927ec84d2bea5031f8&o=',
       ],
       amenityNames: ['WiFi', 'Garden', 'Breakfast Included'],
       hostIndex: 0,
@@ -778,11 +778,11 @@ export const listingsData = [
       bathrooms: 1,
       instantBook: true,
       coverImage:
-        'https://a0.muscache.com/im/pictures/hosting/Hosting-1240894766018150984/original/e8584852-506a-4934-9725-3929e0237976.jpeg?im_w=720',
+        'https://cf.bstatic.com/xdata/images/hotel/max1024x768/367397409.jpg?k=b506d81cb1a53a2503211821aac75843d04469a1ebdee3c6c685c267ca684531&o=',
       images: [
-        'https://a0.muscache.com/im/pictures/hosting/Hosting-1240894766018150984/original/e8584852-506a-4934-9725-3929e0237976.jpeg?im_w=720',
-        'https://a0.muscache.com/im/pictures/hosting/Hosting-1240894766018150984/original/4e296838-8924-469b-9869-797762692040.jpeg?im_w=720',
-        'https://a0.muscache.com/im/pictures/hosting/Hosting-1240894766018150984/original/b3438343-2415-4682-8950-716499317926.jpeg?im_w=720',
+        'https://cf.bstatic.com/xdata/images/hotel/max1024x768/367397409.jpg?k=b506d81cb1a53a2503211821aac75843d04469a1ebdee3c6c685c267ca684531&o=',
+        'https://cf.bstatic.com/xdata/images/hotel/max1024x768/510967520.jpg?k=4342b78221bf5cd72cddea96928e98ef801ed72c46a4630006e3d6630f12d655&o=',
+        'https://cf.bstatic.com/xdata/images/hotel/max1024x768/229116843.jpg?k=509e2a712f9bd7cb20af5fd6eba83f677cfd65c06fd6447d8bf8f9e3e0061a2d&o=',
       ],
       amenityNames: ['WiFi', 'Kitchen', 'Balcony', 'Hiking'],
       hostIndex: 1,
