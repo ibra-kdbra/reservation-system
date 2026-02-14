@@ -155,7 +155,7 @@ Content-Type: application/json
 ### Search Listings
 
 ```http
-GET /listings/search?city=Paris&guests=2&minPrice=50&maxPrice=200&propertyType=APARTMENT&limit=20&offset=0
+GET /listings/search?city=Paris&guests=2&minPrice=50&maxPrice=200&propertyType=APARTMENT&checkIn=2026-03-01&checkOut=2026-03-05&limit=20&offset=0
 ```
 
 ### Get My Listings

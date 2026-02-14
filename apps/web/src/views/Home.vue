@@ -93,12 +93,12 @@
           </div>
           <div class="search-field guests-field">
             <label>Guests</label>
-            <select v-model="guests">
-              <option value="1">1 Guest</option>
-              <option value="2">2 Guests</option>
-              <option value="3">3 Guests</option>
-              <option value="4">4 Guests</option>
-              <option value="5">5+ Guests</option>
+            <select v-model.number="guests">
+              <option :value="1">1 Guest</option>
+              <option :value="2">2 Guests</option>
+              <option :value="3">3 Guests</option>
+              <option :value="4">4 Guests</option>
+              <option :value="5">5+ Guests</option>
             </select>
           </div>
           <MagneticButton variant="primary" size="lg" @click="handleSearch">
@@ -270,7 +270,7 @@ useScrollReveal({ staggerDelay: 100 })
 const searchQuery = ref('')
 const checkIn = ref('')
 const checkOut = ref('')
-const guests = ref('2')
+const guests = ref(1)
 const listings = ref<any[]>([])
 const loading = ref(true)
 const activeCategory = ref('ALL')

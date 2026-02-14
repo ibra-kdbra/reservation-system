@@ -234,6 +234,14 @@ export class SearchListingsDto {
   @Max(100)
   limit?: number;
 
+  @IsString()
+  @IsOptional()
+  checkIn?: string;
+
+  @IsString()
+  @IsOptional()
+  checkOut?: string;
+
   @IsNumber()
   @IsOptional()
   @Min(0)

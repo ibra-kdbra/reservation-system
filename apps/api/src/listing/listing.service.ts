@@ -12,7 +12,7 @@ import {
 
 @Injectable()
 export class ListingService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   /**
    * Create a new listing
@@ -27,10 +27,10 @@ export class ListingService {
         status: 'DRAFT',
         amenities: amenityIds
           ? {
-              create: amenityIds.map((amenityId) => ({
-                amenity: { connect: { id: amenityId } },
-              })),
-            }
+            create: amenityIds.map((amenityId) => ({
+              amenity: { connect: { id: amenityId } },
+            })),
+          }
           : undefined,
       },
       include: {
@@ -120,6 +120,8 @@ export class ListingService {
       instantBook,
       limit = 20,
       offset = 0,
+      checkIn,
+      checkOut,
     } = dto;
 
     const where: any = {
@@ -135,6 +137,31 @@ export class ListingService {
     if (bedrooms) where.bedrooms = { gte: bedrooms };
     if (bathrooms) where.bathrooms = { gte: bathrooms };
     if (instantBook !== undefined) where.instantBook = instantBook;
+
+    // Filter by availability if dates are provided
+    if (checkIn && checkOut) {
+      const checkInDate = new Date(checkIn);
+      const checkOutDate = new Date(checkOut);
+
+      // Find listings that are booked during the requested period
+      // A booking overlaps if: (RequestStart < BookingEnd) AND (RequestEnd > BookingStart)
+      const bookedListings = await this.prisma.booking.findMany({
+        where: {
+          status: { in: ['CONFIRMED', 'COMPLETED'] },
+          AND: [
+            { checkIn: { lt: checkOutDate } },
+            { checkOut: { gt: checkInDate } },
+          ],
+        },
+        select: { listingId: true },
+      });
+
+      const bookedListingIds = bookedListings.map((b) => b.listingId);
+
+      if (bookedListingIds.length > 0) {
+        where.id = { notIn: bookedListingIds };
+      }
+    }
 
     const [listings, total] = await Promise.all([
       this.prisma.listing.findMany({
