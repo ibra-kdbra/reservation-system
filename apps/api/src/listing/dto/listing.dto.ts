@@ -210,6 +210,11 @@ export class SearchListingsDto {
   @Min(0)
   maxPrice?: number;
 
+  @IsArray()
+  @IsOptional()
+  @IsString({ each: true })
+  amenities?: string[];
+
   @IsEnum(PropertyType)
   @IsOptional()
   propertyType?: PropertyType;
