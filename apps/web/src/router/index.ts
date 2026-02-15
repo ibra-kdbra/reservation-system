@@ -77,6 +77,56 @@ const router = createRouter({
       component: () => import('../views/admin/AdminDashboard.vue'),
       meta: { requiresAuth: true, requiresAdmin: true },
     },
+    {
+      path: '/about',
+      name: 'about',
+      component: () => import('../views/static/About.vue'),
+    },
+    {
+      path: '/privacy',
+      name: 'privacy',
+      component: () => import('../views/static/Privacy.vue'),
+    },
+    {
+      path: '/terms',
+      name: 'terms',
+      component: () => import('../views/static/Terms.vue'),
+    },
+    {
+      path: '/safety',
+      name: 'safety',
+      component: () => import('../views/static/Safety.vue'),
+    },
+    {
+      path: '/cancellation',
+      name: 'cancellation',
+      component: () => import('../views/static/Cancellation.vue'),
+    },
+    {
+      path: '/contact',
+      name: 'contact',
+      component: () => import('../views/static/Contact.vue'),
+    },
+    {
+      path: '/host/landing',
+      name: 'host-landing',
+      component: () => import('../views/static/HostLanding.vue'),
+    },
+    {
+      path: '/host/resources',
+      name: 'host-resources',
+      component: () => import('../views/static/Resources.vue'),
+    },
+    {
+      path: '/community',
+      name: 'community',
+      component: () => import('../views/static/Community.vue'),
+    },
+    {
+      path: '/help',
+      name: 'help',
+      component: () => import('../views/static/Help.vue'),
+    },
   ],
 })
 
@@ -93,7 +143,7 @@ router.beforeEach((to, from, next) => {
     next({ name: 'home' })
     return
   }
-  
+
   if (to.meta.requiresGuest && authStore.isAuthenticated) {
     next({ name: 'home' })
   } else {
