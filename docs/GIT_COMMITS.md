@@ -252,3 +252,67 @@ Phase 1 changes are now committed in a clean, organized manner:
 **Date**: 2026-02-04  
 **Phase**: Phase 1 - Project Foundation  
 **Status**: Complete ✅
+
+---
+
+# Phase 8.5 & 10 Git Commits Summary
+
+## Overview
+
+Following the project's strict version control standards, **33 individual commits** were created to document the Explore Page Revamp, Static Pages, and Final Polish. Each modified file was committed separately to ensure granular history.
+
+## Commit History
+
+### Cleanup & Maintenance
+
+- `1c14477` - cleanup: remove unused HelloWorld component from apps/web/src/components
+- `651e045` - cleanup: remove unused AdvancedFilters component from apps/web/src/components/ui
+- `8e4ff85` - cleanup: remove redundant docker-compose.minimal.yml as the main docker-compose.yml is sufficient
+- `9978052` - chore(api): update scripts with testing command and adjust dependencies in package.json
+- `1a78888` - chore(api): update app.module.ts to include ServeStaticModule and configure base paths
+
+### Backend Features (Phase 8.5)
+
+- `ca8dc88` - feat(api): expand SearchListingsDto to include amenities and price range filter fields
+- `3948e7d` - feat(api): implement advanced amenity filtering logic in listing service
+- `b06f268` - test(api): create unit tests for ListingService to verify advanced search logic
+
+### Data Updates
+
+- `e4ce3d4` - data: replace Bhutan listing with Cambodia villa in seed data
+- `cfe8f14` - data: refactor seed script to support modular data files
+
+### Frontend Core & Composables
+
+- `2ff3571` - feat(web): update footer layout with new links to static pages
+- `9fb1a93` - feat(web): create SearchFilters component for advanced search filtering
+- `e97907c` - feat(web): create useBooking composable to centralize checkout flow
+- `79f1cd7` - feat(web): create useListingSearch composable for search synchronization
+- `a7495fa` - feat(web): update router with static routes and navigation guards
+
+### Frontend Views & Logic
+
+- `e1aa631` - refactor(web): rewrite Checkout view to use useBooking composable
+- `4be3b18` - feat(web): update Search view with Advanced Filter integration
+
+### Static Pages (Phase 9)
+
+- `160e9d4` - feat(web/static): add About Us community page
+- `bbb0841` - feat(web/static): add Cancellation Policy page
+- `7abf309` - feat(web/static): add Community standards page
+- `e8234db` - feat(web/static): add Contact Us page with support info
+- `d45915c` - feat(web/static): add Help Center and FAQ page
+- `8f1d3ff` - feat(web/static): add Host Landing recruiting page
+- `1592375` - feat(web/static): add Privacy Policy page
+- `91cb7d2` - feat(web/static): add Travel Resources page
+- `7c328f6` - feat(web/static): add Trust and Safety guide page
+- `ef40cf3` - feat(web/static): add Terms of Service page
+
+### Infrastructure & Documentation
+
+- `ee668a6` - chore(deployment): add multi-stage monolith Dockerfile
+- `4e579bf` - docs(api): add API documentation README
+- `9bc603f` - docs(architecture): add architecture documentation README
+- `3c374c7` - docs(deployment): add deployment documentation README
+- `bc25344` - docs: document Phase 8.5 completion in project status
+- `63d09e6` - chore: update package-lock.json with new dependencies
