@@ -17,7 +17,8 @@
         <!-- Compact Search Bar -->
         <div class="compact-search">
           <div class="search-divider"></div>
-          <input v-model="filters.city" placeholder="Anywhere" class="search-input location" @keyup.enter="refreshSearch" />
+          <input v-model="filters.city" placeholder="Anywhere" class="search-input location"
+            @keyup.enter="refreshSearch" />
           <div class="search-divider"></div>
           <input type="date" v-model="filters.checkIn" class="search-input date" @change="refreshSearch" />
           <div class="search-divider"></div>
@@ -45,19 +46,17 @@
     <!-- Filters Bar -->
     <div class="filters-bar">
       <div class="container filters-content">
-        <button class="filter-chip" :class="{ active: filters.priceRange }" @click="togglePriceModal">
-          Price
-          <ChevronDown :size="14" />
-        </button>
-        <button class="filter-chip" :class="{ active: filters.guests > 1 }">
-          Guests
-          <ChevronDown :size="14" />
-        </button>
-        <div class="vertical-divider"></div>
-        <button class="filter-chip" v-for="type in propertyTypes" :key="type"
-          :class="{ active: filters.propertyType === type }" @click="toggleType(type)">
-          {{ formatType(type) }}
-        </button>
+        <SearchFilters :initial-filters="filters" @apply="handleApplyFilters" />
+        
+        <!-- Active Filter Chips (Optional: show what's active if not in panel) -->
+        <div class="active-filters-list">
+          <button v-if="filters.propertyType" class="chip active" @click="toggleType('')">
+             {{ formatType(filters.propertyType) }} <span class="remove-x">×</span>
+          </button>
+           <button v-if="filters.minPrice || filters.maxPrice" class="chip active" @click="clearPrice">
+             {{ formatPriceRange() }} <span class="remove-x">×</span>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -86,7 +85,7 @@
               <img :src="listing.host.avatar" :alt="listing.host.firstName" />
             </div>
           </div>
-          
+
           <div class="listing-details">
             <div class="listing-header">
               <h3 class="listing-title">{{ listing.city }}, {{ listing.country }}</h3>
@@ -95,10 +94,10 @@
                 <span>{{ listing.averageRating }}</span>
               </div>
             </div>
-            
+
             <p class="listing-desc">{{ listing.title }}</p>
             <p class="listing-meta">{{ formatDateRange() }}</p>
-            
+
             <div class="listing-price">
               <span class="price-amount">${{ listing.pricePerNight }}</span>
               <span class="price-period"> night</span>
@@ -111,103 +110,21 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted, watch } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { api } from '../../api/client'
-import { Search, Menu, User, ChevronDown, Heart, Star } from 'lucide-vue-next'
+import { useRouter, useRoute } from 'vue-router'
+import { useListingSearch } from '../../composables/useListingSearch'
+import { Search, Menu, User, Heart, Star } from 'lucide-vue-next' // Removed ChevronDown as it was used in old filters
+import SearchFilters from '../../components/search/SearchFilters.vue'
 
-const route = useRoute()
 const router = useRouter()
-
-const loading = ref(true)
-const listings = ref<any[]>([])
-
-// Filters
-const filters = reactive({
-  city: (route.query.city as string) || '',
-  checkIn: (route.query.checkIn as string) || '',
-  checkOut: (route.query.checkOut as string) || '',
-  guests: Number(route.query.guests) || 1,
-  propertyType: (route.query.propertyType as string) || '',
-  priceRange: false, // UI state for now
-})
-
-const propertyTypes = ['APARTMENT', 'HOUSE', 'VILLA', 'LOFT']
-
-// Fetch listings
-async function fetchListings() {
-  loading.value = true
-  try {
-    const params: any = {
-      limit: 20,
-      offset: 0,
-      guests: filters.guests
-    }
-    
-    if (filters.city) params.city = filters.city
-    if (filters.checkIn) params.checkIn = filters.checkIn
-    if (filters.checkOut) params.checkOut = filters.checkOut
-    if (filters.propertyType) params.propertyType = filters.propertyType
-
-    const { data } = await api.searchListings(params)
-    listings.value = data.listings || []
-  } catch (err) {
-    console.error('Search failed', err)
-  } finally {
-    loading.value = false
-  }
-}
-
-// Watch URL changes to refetch
-watch(() => route.query, (newQuery) => {
-  filters.city = (newQuery.city as string) || ''
-  filters.checkIn = (newQuery.checkIn as string) || ''
-  filters.checkOut = (newQuery.checkOut as string) || ''
-  filters.guests = Number(newQuery.guests) || 1
-  filters.propertyType = (newQuery.propertyType as string) || ''
-  fetchListings()
-})
-
-onMounted(() => {
-  fetchListings()
-})
-
-// Actions
-function refreshSearch() {
-  const query: any = { ...route.query }
-  if (filters.city) query.city = filters.city
-  else delete query.city
-  
-  if (filters.checkIn) query.checkIn = filters.checkIn
-  else delete query.checkIn
-  
-  if (filters.checkOut) query.checkOut = filters.checkOut
-  else delete query.checkOut
-
-  router.push({ query })
-}
-
-function toggleType(type: string) {
-  if (filters.propertyType === type) {
-    filters.propertyType = ''
-  } else {
-    filters.propertyType = type
-  }
-  const query: any = { ...route.query }
-  if (filters.propertyType) query.propertyType = filters.propertyType
-  else delete query.propertyType
-  
-  router.push({ query })
-}
-
-function clearFilters() {
-  filters.city = ''
-  filters.checkIn = ''
-  filters.checkOut = ''
-  filters.guests = 1
-  filters.propertyType = ''
-  router.push({ query: {} })
-}
+const route = useRoute()
+const {
+  loading,
+  listings,
+  filters,
+  refreshSearch,
+  toggleType,
+  clearFilters
+} = useListingSearch()
 
 function goToListing(id: string) {
   // Pass dates to detail page if selected
@@ -215,18 +132,50 @@ function goToListing(id: string) {
   if (filters.checkIn) query.checkIn = filters.checkIn
   if (filters.checkOut) query.checkOut = filters.checkOut
   if (filters.guests > 1) query.guests = filters.guests
-  
+
   router.push({ name: 'listing-detail', params: { id }, query })
+}
+
+function handleApplyFilters(newFilters: any) {
+    const query: any = { 
+        ...route.query, 
+        ...newFilters 
+    }
+    
+    // Clean up empty values to keep URL clean
+    if (!newFilters.propertyType) delete query.propertyType
+    if (!newFilters.minPrice) delete query.minPrice
+    if (!newFilters.maxPrice) delete query.maxPrice
+    if (!newFilters.guests || newFilters.guests === 1) delete query.guests
+    // guests might be handled by SearchFilters or top bar. SearchFilters has it.
+    // If top bar date search input also had guests, we need to sync. 
+    // For now SearchFilters is the source of truth for guests in this view.
+    
+    if (!newFilters.amenities || newFilters.amenities.length === 0) delete query.amenities
+
+    router.push({ query })
+}
+
+function clearPrice() {
+    const query: any = { ...route.query }
+    delete query.minPrice
+    delete query.maxPrice
+    router.push({ query })
 }
 
 // Helpers
 function formatType(type: string) {
+  if (!type) return ''
   return type.charAt(0) + type.slice(1).toLowerCase() + 's'
 }
 
-function togglePriceModal() {
-  // TODO: Implement price filter modal
-  alert('Price filter coming soon!')
+function formatPriceRange() {
+    const min = filters.minPrice
+    const max = filters.maxPrice
+    if (min && max) return `$${min} - $${max}`
+    if (min) return `$${min}+`
+    if (max) return `Up to $${max}`
+    return ''
 }
 
 function formatDateRange() {
@@ -284,12 +233,12 @@ function formatDateRange() {
   border: 1px solid var(--color-gray-300);
   border-radius: var(--radius-full);
   padding: 4px 8px;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.05);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.05);
   transition: box-shadow 0.2s;
 }
 
 .compact-search:hover {
-  box-shadow: 0 2px 4px rgba(0,0,0,0.12), 0 6px 16px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 6px 16px rgba(0, 0, 0, 0.08);
 }
 
 .search-input {
@@ -345,7 +294,7 @@ function formatDateRange() {
 }
 
 .menu-btn:hover {
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .avatar-placeholder {
@@ -401,14 +350,44 @@ function formatDateRange() {
   background: var(--color-gray-100);
   border-color: var(--color-gray-900);
   border-width: 2px;
-  padding: 7px 15px; /* adjust for border width */
+  padding: 7px 15px;
+  /* adjust for border width */
 }
 
 .vertical-divider {
-  width: 1px;
-  height: 24px;
-  background: var(--color-gray-300);
-  margin: 0 4px;
+  display: none; /* Hide if not used */
+}
+
+.active-filters-list {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-left: 16px;
+}
+
+.chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: black;
+  color: white;
+  border-radius: 9999px;
+  font-size: 13px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+}
+
+.remove-x {
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 1;
+  opacity: 0.7;
+}
+
+.chip:hover .remove-x {
+  opacity: 1;
 }
 
 /* Main Content */
@@ -417,7 +396,8 @@ function formatDateRange() {
   padding-bottom: 48px;
 }
 
-.loading-state, .empty-state {
+.loading-state,
+.empty-state {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -436,7 +416,11 @@ function formatDateRange() {
   margin-bottom: 16px;
 }
 
-@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 
 .empty-icon {
   font-size: 48px;
@@ -492,7 +476,7 @@ function formatDateRange() {
   right: 12px;
   background: transparent;
   border: none;
-  color: rgba(255,255,255,0.7);
+  color: rgba(255, 255, 255, 0.7);
   cursor: pointer;
   transition: transform 0.2s;
 }
@@ -511,7 +495,7 @@ function formatDateRange() {
   border-radius: 50%;
   border: 2px solid white;
   overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .host-badge img {
