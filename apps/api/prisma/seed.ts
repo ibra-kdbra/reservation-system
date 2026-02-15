@@ -42,6 +42,8 @@ async function main() {
       data: {
         ...hostData,
         password: hashedPassword,
+        role: 'HOST',
+        status: 'ACTIVE', // Added UserStatus
       },
     });
     hosts.push(host);
@@ -53,6 +55,8 @@ async function main() {
       data: {
         ...guestData,
         password: hashedPassword,
+        role: 'USER', // Changed from GUEST to USER as per schema
+        status: 'ACTIVE',
       },
     });
     guests.push(guest);
@@ -64,12 +68,12 @@ async function main() {
   const amenities: Record<string, any> = {};
   for (const a of amenityData) {
     const category = (a as any).category || 'Basic';
-    amenities[a.name] = await prisma.amenity.create({ 
-        data: {
-            name: a.name,
-            icon: a.icon,
-            category: category
-        } 
+    amenities[a.name] = await prisma.amenity.create({
+      data: {
+        name: a.name,
+        icon: a.icon,
+        category: category
+      }
     });
   }
 
@@ -79,10 +83,10 @@ async function main() {
   const listings = [];
   for (const data of listingsData) {
     const { amenityNames, hostIndex, ...listingFields } = data;
-    
+
     // Ensure hostIndex is valid, default to host (0) if not
     const safeHostIndex = (hostIndex !== undefined && hostIndex >= 0 && hostIndex < hosts.length) ? hostIndex : 0;
-    
+
     const listing = await prisma.listing.create({
       data: {
         ...listingFields,
@@ -149,26 +153,26 @@ async function main() {
   for (const listing of listings) {
     // Generate 3-8 reviews per listing
     const reviewCount = Math.floor(Math.random() * 6) + 3;
-    
-    for (let i = 0; i < reviewCount; i++) {
-        const guest = guests[Math.floor(Math.random() * guests.length)];
-        
-        // Create a completed booking first (phantom booking for review validity)
-        const pastBooking = await prisma.booking.create({
-          data: {
-            guestId: guest.id,
-            listingId: listing.id,
-            checkIn: new Date(Date.now() - 100000000),
-            checkOut: new Date(Date.now() - 90000000),
-            nights: 3,
-            totalPrice: 100,
-            pricePerNight: 33,
-            status: 'COMPLETED',
-            adults: 2
-          }
-        });
 
-        await prisma.review.create({
+    for (let i = 0; i < reviewCount; i++) {
+      const guest = guests[Math.floor(Math.random() * guests.length)];
+
+      // Create a completed booking first (phantom booking for review validity)
+      const pastBooking = await prisma.booking.create({
+        data: {
+          guestId: guest.id,
+          listingId: listing.id,
+          checkIn: new Date(Date.now() - 100000000),
+          checkOut: new Date(Date.now() - 90000000),
+          nights: 3,
+          totalPrice: 100,
+          pricePerNight: 33,
+          status: 'COMPLETED',
+          adults: 2
+        }
+      });
+
+      await prisma.review.create({
         data: {
           bookingId: pastBooking.id,
           listingId: listing.id,
@@ -192,25 +196,25 @@ async function main() {
   // ─── Notifications ───────────────────────────────
   // Use first guest and first host for sample notifications
   if (guests.length > 0) {
-      await prisma.notification.create({
-        data: {
-          userId: guests[0].id,
-          type: 'BOOKING_CONFIRMED',
-          title: 'Booking Confirmed',
-          message: 'Your stay at the Shibuya Modern Apartment has been confirmed!',
-        },
-      });
+    await prisma.notification.create({
+      data: {
+        userId: guests[0].id,
+        type: 'BOOKING_CONFIRMED',
+        title: 'Booking Confirmed',
+        message: 'Your stay at the Shibuya Modern Apartment has been confirmed!',
+      },
+    });
   }
 
   if (hosts.length > 0) {
-      await prisma.notification.create({
-        data: {
-          userId: hosts[0].id,
-          type: 'BOOKING_REQUEST',
-          title: 'New Booking Request',
-          message: 'Priya Sharma has requested to book your Kyoto Machiya Townhouse.',
-        },
-      });
+    await prisma.notification.create({
+      data: {
+        userId: hosts[0].id,
+        type: 'BOOKING_REQUEST',
+        title: 'New Booking Request',
+        message: 'Priya Sharma has requested to book your Kyoto Machiya Townhouse.',
+      },
+    });
   }
 }
 
