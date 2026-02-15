@@ -29,7 +29,7 @@
                             <div class="trip-detail-header">
                                 <div class="trip-info">
                                     <h3>Guests</h3>
-                                    <p>{{ guests }} guest{{ guests > 1 ? 's' : '' }}</p>
+                                    <p>{{ bookingData.adults }} guest{{ bookingData.adults > 1 ? 's' : '' }}</p>
                                 </div>
                                 <button class="edit-link" @click="router.back()">Edit</button>
                             </div>
@@ -55,8 +55,9 @@
                                 <label>Card number</label>
                                 <div class="input-icon-wrapper">
                                     <CreditCard class="input-icon" :size="18" />
-                                    <input v-model="cardNumber" type="text" placeholder="0000 0000 0000 0000"
-                                        maxlength="19" class="input-with-icon" @input="formatCardNumber" />
+                                    <input v-model="bookingData.cardNumber" type="text"
+                                        placeholder="0000 0000 0000 0000" maxlength="19" class="input-with-icon"
+                                        @input="formatCardNumber" />
                                 </div>
                             </div>
 
@@ -65,15 +66,15 @@
                                     <label>Expiration</label>
                                     <div class="input-icon-wrapper">
                                         <Calendar class="input-icon" :size="18" />
-                                        <input v-model="cardExpiry" type="text" placeholder="MM / YY" maxlength="7"
-                                            class="input-with-icon" @input="formatExpiry" />
+                                        <input v-model="bookingData.cardExpiry" type="text" placeholder="MM / YY"
+                                            maxlength="7" class="input-with-icon" @input="formatExpiry" />
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label>CVV</label>
                                     <div class="input-icon-wrapper">
                                         <Lock class="input-icon" :size="18" />
-                                        <input v-model="cardCvv" type="text" placeholder="123" maxlength="4"
+                                        <input v-model="bookingData.cardCvc" type="text" placeholder="123" maxlength="4"
                                             class="input-with-icon" />
                                     </div>
                                 </div>
@@ -83,7 +84,7 @@
                                 <label>Cardholder name</label>
                                 <div class="input-icon-wrapper">
                                     <User class="input-icon" :size="18" />
-                                    <input v-model="cardName" type="text" placeholder="Name on card"
+                                    <input v-model="bookingData.cardName" type="text" placeholder="Name on card"
                                         class="input-with-icon" />
                                 </div>
                             </div>
@@ -93,8 +94,9 @@
                     <!-- Special Requests -->
                     <section class="checkout-section">
                         <h2 class="section-title">Special requests</h2>
-                        <textarea v-model="specialRequests" placeholder="Any special requests for the host? (optional)"
-                            rows="3" class="special-requests"></textarea>
+                        <textarea v-model="bookingData.specialRequests"
+                            placeholder="Any special requests for the host? (optional)" rows="3"
+                            class="special-requests"></textarea>
                     </section>
 
                     <!-- Cancellation Policy -->
@@ -185,11 +187,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '../../stores/auth'
 import { api } from '../../api/client'
 import { useToast } from '../../composables/useToast'
+import { useBooking } from '../../composables/useBooking'
 import {
     ChevronLeft, CreditCard, Calendar, Lock, User, ShieldCheck, Star
 } from 'lucide-vue-next'
@@ -201,62 +204,60 @@ const toast = useToast()
 
 // Listing data
 const listing = ref<any>(null)
+const listingId = route.params.listingId as string
 
-// Trip params from query
-const checkIn = route.query.checkIn as string || ''
-const checkOut = route.query.checkOut as string || ''
-const guests = Number(route.query.guests) || 1
-
-// Derived pricing
+// Derived pricing for composable
 const pricePerNight = computed(() => Number(listing.value?.pricePerNight) || 0)
+
+// Init composable
+const {
+    loading: isProcessing,
+    error: errorMessage,
+    bookingData,
+    nights,
+    totalPrice: calculatedTotal, // Base total from composable
+    submitBooking
+} = useBooking(listingId, pricePerNight)
+
+// Sync query params to bookingData
+bookingData.value.checkIn = route.query.checkIn as string || ''
+bookingData.value.checkOut = route.query.checkOut as string || ''
+bookingData.value.adults = Number(route.query.guests) || 1
+
+// UI Computed
 const cleaningFee = computed(() => Number(listing.value?.cleaningFee) || 0)
 const serviceFee = computed(() => Number(listing.value?.serviceFee) || 0)
 
-const nights = computed(() => {
-    if (!checkIn || !checkOut) return 0
-    const start = new Date(checkIn)
-    const end = new Date(checkOut)
-    return Math.max(1, Math.ceil(Math.abs(end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)))
-})
-
+// Total override to include fees
 const totalPrice = computed(() => {
-    return (pricePerNight.value * nights.value) + cleaningFee.value + serviceFee.value
+    return calculatedTotal.value + cleaningFee.value + serviceFee.value
 })
 
-// Formatted dates
 const formattedCheckIn = computed(() => {
-    if (!checkIn) return ''
-    return new Date(checkIn).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+    if (!bookingData.value.checkIn) return ''
+    return new Date(bookingData.value.checkIn).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 })
 
 const formattedCheckOut = computed(() => {
-    if (!checkOut) return ''
-    return new Date(checkOut).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+    if (!bookingData.value.checkOut) return ''
+    return new Date(bookingData.value.checkOut).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 })
 
-// Payment form
-const cardNumber = ref('')
-const cardExpiry = ref('')
-const cardCvv = ref('')
-const cardName = ref('')
-const specialRequests = ref('')
-
-const isProcessing = ref(false)
-const errorMessage = ref('')
-
+// Validation
 const isFormValid = computed(() => {
-    return cardNumber.value.length >= 16 &&
-        cardExpiry.value.length >= 5 &&
-        cardCvv.value.length >= 3 &&
-        cardName.value.length >= 2 &&
-        checkIn && checkOut
+    return bookingData.value.cardNumber.length >= 16 &&
+        bookingData.value.cardExpiry.length >= 5 &&
+        bookingData.value.cardCvc.length >= 3 &&
+        bookingData.value.cardName.length >= 2 &&
+        bookingData.value.checkIn && bookingData.value.checkOut
 })
 
+// Formatting Helpers
 function formatCardNumber(e: Event) {
     const input = e.target as HTMLInputElement
     let val = input.value.replace(/\D/g, '').slice(0, 16)
     val = val.replace(/(\d{4})/g, '$1 ').trim()
-    cardNumber.value = val
+    bookingData.value.cardNumber = val
 }
 
 function formatExpiry(e: Event) {
@@ -265,7 +266,7 @@ function formatExpiry(e: Event) {
     if (val.length >= 3) {
         val = val.slice(0, 2) + ' / ' + val.slice(2)
     }
-    cardExpiry.value = val
+    bookingData.value.cardExpiry = val
 }
 
 function formatCurrency(amount: number) {
@@ -276,9 +277,21 @@ function formatCurrency(amount: number) {
     }).format(amount)
 }
 
-// Fetch listing
+// Actions
+async function confirmBooking() {
+    if (!isFormValid.value) return
+
+    await submitBooking()
+
+    if (errorMessage.value) {
+        toast.error('Booking failed')
+    } else {
+        toast.success('Booking confirmed! 🎉')
+        // Navigation is handled in composable, but we can verify/handle here if needed
+    }
+}
+
 onMounted(async () => {
-    const listingId = route.params.listingId as string
     if (!listingId) {
         router.push({ name: 'home' })
         return
@@ -291,35 +304,6 @@ onMounted(async () => {
         router.push({ name: 'home' })
     }
 })
-
-// Submit booking
-async function confirmBooking() {
-    if (!isFormValid.value) return
-    isProcessing.value = true
-    errorMessage.value = ''
-
-    // Simulate payment processing delay
-    await new Promise(resolve => setTimeout(resolve, 1800))
-
-    try {
-        const listingId = route.params.listingId as string
-        const { data } = await api.createBooking({
-            listingId,
-            checkIn,
-            checkOut,
-            adults: guests,
-            specialRequests: specialRequests.value || undefined,
-        })
-
-        toast.success('Booking confirmed! 🎉')
-        router.push({ name: 'booking-confirmation', params: { bookingId: data.id } })
-    } catch (err: any) {
-        errorMessage.value = err?.response?.data?.message || 'Payment failed. Please try again.'
-        toast.error('Booking failed')
-    } finally {
-        isProcessing.value = false
-    }
-}
 </script>
 
 <style scoped>
