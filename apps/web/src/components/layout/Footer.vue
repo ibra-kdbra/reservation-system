@@ -65,10 +65,10 @@
         <div class="footer-col">
           <h4>Hosting</h4>
           <ul>
-            <li><a href="#">Become a Host</a></li>
-            <li><a href="#">Host Resources</a></li>
-            <li><a href="#">Responsible Hosting</a></li>
-            <li><a href="#">Community Forum</a></li>
+            <li><router-link to="/host/landing">Become a Host</router-link></li>
+            <li><router-link to="/host/resources">Host Resources</router-link></li>
+            <li><router-link to="/safety">Responsible Hosting</router-link></li>
+            <li><router-link to="/community">Community Forum</router-link></li>
           </ul>
         </div>
 
@@ -76,10 +76,10 @@
         <div class="footer-col">
           <h4>Support</h4>
           <ul>
-            <li><a href="#">Help Center</a></li>
-            <li><a href="#">Safety Info</a></li>
-            <li><a href="#">Cancellation Policy</a></li>
-            <li><a href="#">Contact Us</a></li>
+            <li><router-link to="/help">Help Center</router-link></li>
+            <li><router-link to="/safety">Safety Info</router-link></li>
+            <li><router-link to="/cancellation">Cancellation Policy</router-link></li>
+            <li><router-link to="/contact">Contact Us</router-link></li>
           </ul>
         </div>
       </div>
@@ -89,9 +89,9 @@
       <div class="container footer-bottom-inner">
         <p>&copy; {{ new Date().getFullYear() }} NestAsia. All rights reserved.</p>
         <div class="footer-legal">
-          <a href="#">Privacy</a>
+          <router-link to="/privacy">Privacy</router-link>
           <span>·</span>
-          <a href="#">Terms</a>
+          <router-link to="/terms">Terms</router-link>
           <span>·</span>
           <a href="#">Sitemap</a>
         </div>
