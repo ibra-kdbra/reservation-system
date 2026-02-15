@@ -114,6 +114,7 @@ export class ListingService {
       guests,
       minPrice,
       maxPrice,
+      amenities,
       propertyType,
       bedrooms,
       bathrooms,
@@ -137,6 +138,30 @@ export class ListingService {
     if (bedrooms) where.bedrooms = { gte: bedrooms };
     if (bathrooms) where.bathrooms = { gte: bathrooms };
     if (instantBook !== undefined) where.instantBook = instantBook;
+
+    // Filter by amenities (must have all selected)
+    if (amenities && amenities.length > 0) {
+      where.amenities = {
+        some: {
+          amenity: {
+            name: { in: Array.isArray(amenities) ? amenities : [amenities] },
+          },
+        },
+      };
+      // Note: The above only checks if it has AT LEAST ONE.
+      // To check logic for "ALL selected amenities", Prisma requires an 'every' or multple 'some' clauses.
+      // A simpler approach for "AND" logic with Prisma relations:
+      const amenityList = Array.isArray(amenities) ? amenities : [amenities];
+      where.AND = amenityList.map((amenity) => ({
+        amenities: {
+          some: {
+            amenity: {
+              name: { equals: amenity, mode: 'insensitive' },
+            },
+          },
+        },
+      }));
+    }
 
     // Filter by availability if dates are provided
     if (checkIn && checkOut) {
