@@ -57,6 +57,13 @@
 - ✅ **Search UI** — New search results page with grid layout and filters
 - ✅ **Integration** — End-to-end flow from homepage to booking
 
+### Phase 8.5: Explore Page Revamp (100%)
+
+- ✅ **Backend Amenities** — Filtering logic for multiple amenities (AND logic)
+- ✅ **Advanced Filters** — New UI for Price Range, Guests, and Amenities
+- ✅ **Siem Reap Listing** — Replaced Bhutan listing with a unique Cambodia villa
+- ✅ **Refactored Search** — Clean integration of filters with URL synchronization
+
 ## 🚀 How to Run
 
 ### Quick Start (Development)
