@@ -12,8 +12,10 @@
               class="category-item"
               :class="{ active: filters.propertyType === category.value }"
               @click="toggleType(category.value)"
+              :aria-label="`Filter by ${category.label}`"
+              :aria-pressed="filters.propertyType === category.value"
             >
-              <span class="category-icon">{{ category.icon }}</span>
+              <span class="category-icon" aria-hidden="true">{{ category.icon }}</span>
               <span class="category-label">{{ category.label }}</span>
             </button>
           </div>
