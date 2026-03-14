@@ -3,31 +3,68 @@ import type {
     User, Listing, Booking, Review, 
     PaginatedResponse, ApiResponse 
 } from '@/types'
+import { useToast } from '@/composables/useToast'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1'
+
+// Augment AxiosRequestConfig to include our custom property
+declare module 'axios' {
+  export interface AxiosRequestConfig {
+    skipToast?: boolean
+  }
+}
 
 class ApiClient {
   private client: AxiosInstance
 
   constructor() {
+    const toast = useToast()
+
     this.client = axios.create({
       baseURL: API_URL,
       headers: {
         'Content-Type': 'application/json',
       },
-      withCredentials: true, // Important: send cookies with requests
+      withCredentials: true,
     })
 
     // Response interceptor - handle errors
     this.client.interceptors.response.use(
       (response) => response,
       async (error) => {
+        const skipToast = error.config?.skipToast
+
+        if (!skipToast) {
+          const message = this.extractErrorMessage(error)
+          toast.error(message)
+        }
+
         // If 401, let the calling code handle it — don't force a redirect
-        // This prevents infinite reload loops when unauthenticated users
-        // visit public pages that attempt to fetch the current user.
         return Promise.reject(error)
       }
     )
+  }
+
+  private extractErrorMessage(error: any): string {
+    if (axios.isAxiosError(error)) {
+      // NestJS typically returns errors in { message: string | string[] } or { data: { message: ... } }
+      const response = error.response
+      const data = response?.data as any
+
+      if (data?.message) {
+        if (Array.isArray(data.message)) {
+          return data.message[0] // Return first validation error
+        }
+        return data.message
+      }
+
+      if (response?.status === 404) return 'Resource not found'
+      if (response?.status === 401) return 'Session expired. Please log in again.'
+      if (response?.status === 403) return 'You do not have permission to perform this action'
+      if (response?.status === 500) return 'Internal server error. Please try again later.'
+    }
+    
+    return error.message || 'An unexpected error occurred'
   }
 
   // Auth endpoints
