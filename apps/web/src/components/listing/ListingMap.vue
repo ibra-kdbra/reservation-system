@@ -2,9 +2,9 @@
     <div class="section map-section">
         <h2 class="section-title">Where you'll be</h2>
         <div class="map-container">
-            <div id="listing-map" class="map-view"></div>
+            <div id="listing-map" class="map-view" aria-label="Interactive map showing listing location"></div>
             <div class="map-placeholder" v-if="!latitude || !longitude">
-                <svg viewBox="0 0 24 24" width="48" height="48" fill="currentColor" class="map-icon">
+                <svg viewBox="0 0 24 24" width="48" height="48" fill="currentColor" class="map-icon" aria-hidden="true">
                     <path
                         d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
                 </svg>
