@@ -4,7 +4,7 @@
       <!-- Brand -->
       <router-link to="/" class="brand">
         <svg class="brand-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-          stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M3 21h18" />
           <path d="M5 21V7l7-4 7 4v14" />
           <path d="M9 21v-6h6v6" />
@@ -26,11 +26,13 @@
       <div class="nav-actions">
         <CurrencySelector class="hide-mobile" />
         <template v-if="authStore.isAuthenticated">
-          <div class="user-menu" @click="toggleDropdown" ref="dropdownRef">
-            <img :src="authStore.user?.avatar || defaultAvatar" alt="Avatar" class="user-avatar" />
+          <div class="user-menu" @click="toggleDropdown" @keydown.enter="toggleDropdown" @keydown.space.prevent="toggleDropdown"
+            ref="dropdownRef" role="button" tabindex="0" aria-haspopup="true" :aria-expanded="showDropdown"
+            aria-label="User menu">
+            <img :src="authStore.user?.avatar || defaultAvatar" alt="" class="user-avatar" />
             <span class="user-name hide-mobile">{{ authStore.user?.firstName || 'User' }}</span>
             <svg class="chevron" :class="{ open: showDropdown }" width="16" height="16" viewBox="0 0 16 16"
-              fill="currentColor">
+              fill="currentColor" aria-hidden="true">
               <path
                 d="M4.427 5.427a.75.75 0 011.06-.014L8 7.773l2.513-2.36a.75.75 0 111.027 1.093l-3 2.817a.75.75 0 01-1.027 0l-3-2.817a.75.75 0 01-.086-1.08z" />
             </svg>
@@ -39,25 +41,25 @@
             <Transition name="dropdown">
               <div v-if="showDropdown" class="dropdown-menu">
                 <router-link to="/profile" class="dropdown-item" @click="showDropdown = false">
-                  <span>👤</span> My Profile
+                  <span aria-hidden="true">👤</span> My Profile
                 </router-link>
                 <router-link to="/bookings" class="dropdown-item" @click="showDropdown = false">
-                  <span>📅</span> My Bookings
+                  <span aria-hidden="true">📅</span> My Bookings
                 </router-link>
                 <router-link to="/wishlist" class="dropdown-item" @click="showDropdown = false">
-                  <span>❤️</span> Wishlist
+                  <span aria-hidden="true">❤️</span> Wishlist
                 </router-link>
                 <router-link v-if="authStore.user?.role === 'HOST'" to="/host/dashboard" class="dropdown-item"
                   @click="showDropdown = false">
-                  <span>📊</span> Host Dashboard
+                  <span aria-hidden="true">📊</span> Host Dashboard
                 </router-link>
                 <router-link v-if="authStore.user?.role === 'ADMIN'" to="/admin" class="dropdown-item"
                   @click="showDropdown = false">
-                  <span>🛡️</span> Admin Dashboard
+                  <span aria-hidden="true">🛡️</span> Admin Dashboard
                 </router-link>
                 <div class="dropdown-divider"></div>
                 <button class="dropdown-item logout" @click="handleLogout">
-                  <span>🚪</span> Log Out
+                  <span aria-hidden="true">🚪</span> Log Out
                 </button>
               </div>
             </Transition>
@@ -69,8 +71,8 @@
         </template>
 
         <!-- Mobile Menu Toggle -->
-        <button class="mobile-toggle" @click="showMobileMenu = !showMobileMenu" aria-label="Menu">
-          <span class="hamburger" :class="{ open: showMobileMenu }">
+        <button class="mobile-toggle" @click="showMobileMenu = !showMobileMenu" aria-label="Menu" :aria-expanded="showMobileMenu">
+          <span class="hamburger" :class="{ open: showMobileMenu }" aria-hidden="true">
             <span></span><span></span><span></span>
           </span>
         </button>
