@@ -37,7 +37,7 @@
                 <div v-for="fav in favorites" :key="fav.id" class="wishlist-card">
                     <router-link :to="`/listings/${fav.listing.id}`" class="card-link">
                         <div class="card-image-wrap">
-                            <img :src="fav.listing.coverImage" :alt="fav.listing.title" loading="lazy" />
+                            <img :src="fav.listing.images?.[0] || ''" :alt="fav.listing.title" loading="lazy" />
                             <button class="remove-btn" @click.prevent.stop="removeFavorite(fav.id)"
                                 aria-label="Remove from wishlist">
                                 <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"
