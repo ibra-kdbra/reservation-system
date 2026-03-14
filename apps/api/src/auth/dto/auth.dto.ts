@@ -6,11 +6,22 @@ import {
   Matches,
   IsOptional,
 } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class RegisterDto {
+  @ApiProperty({
+    description: 'User email address',
+    example: 'user@example.com',
+  })
   @IsEmail()
   email: string;
 
+  @ApiProperty({
+    description: 'User password (min 8 chars, 1 uppercase, 1 lowercase, 1 number/special)',
+    example: 'StrongPassword123!',
+    minLength: 8,
+    maxLength: 100,
+  })
   @IsString()
   @MinLength(8)
   @MaxLength(100)
@@ -19,12 +30,14 @@ export class RegisterDto {
   })
   password: string;
 
+  @ApiPropertyOptional({ description: 'First name', example: 'John' })
   @IsString()
   @IsOptional()
   @MinLength(2)
   @MaxLength(50)
   firstName?: string;
 
+  @ApiPropertyOptional({ description: 'Last name', example: 'Doe' })
   @IsString()
   @IsOptional()
   @MinLength(2)
@@ -33,22 +46,37 @@ export class RegisterDto {
 }
 
 export class LoginDto {
+  @ApiProperty({
+    description: 'User email',
+    example: 'user@example.com',
+  })
   @IsEmail()
   email: string;
 
+  @ApiProperty({
+    description: 'User password',
+    example: 'MySecurePassword123!',
+  })
   @IsString()
   password: string;
 }
 
 export class RefreshTokenDto {
+  @ApiProperty({ description: 'Refresh token provided during login' })
   @IsString()
   refreshToken: string;
 }
 
 export class ChangePasswordDto {
+  @ApiProperty({ description: 'Current password' })
   @IsString()
   currentPassword: string;
 
+  @ApiProperty({
+    description: 'New password (min 8 chars, 1 uppercase, 1 lowercase, 1 number/special)',
+    minLength: 8,
+    maxLength: 100,
+  })
   @IsString()
   @MinLength(8)
   @MaxLength(100)
@@ -59,14 +87,24 @@ export class ChangePasswordDto {
 }
 
 export class ForgotPasswordDto {
+  @ApiProperty({
+    description: 'Email to send reset link to',
+    example: 'user@example.com',
+  })
   @IsEmail()
   email: string;
 }
 
 export class ResetPasswordDto {
+  @ApiProperty({ description: 'Reset token from email' })
   @IsString()
   token: string;
 
+  @ApiProperty({
+    description: 'New password',
+    minLength: 8,
+    maxLength: 100,
+  })
   @IsString()
   @MinLength(8)
   @MaxLength(100)
