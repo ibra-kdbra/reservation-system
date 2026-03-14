@@ -140,7 +140,7 @@
                         <!-- Listing Preview -->
                         <div class="listing-preview" v-if="listing">
                             <div class="listing-thumb-wrapper">
-                                <img :src="listing.coverImage || listing.images?.[0]" :alt="listing.title"
+                                <img :src="listing.images?.[0] || 'https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&q=80&w=800'" :alt="listing.title"
                                     class="listing-thumb" />
                             </div>
                             <div class="listing-info">
@@ -195,13 +195,14 @@ import { useBooking } from '@/composables/useBooking'
 import {
     ChevronLeft, CreditCard, Calendar, Lock, User, ShieldCheck, Star
 } from 'lucide-vue-next'
+import type { Listing } from '@/types'
 
 const route = useRoute()
 const router = useRouter()
 const toast = useToast()
 
 // Listing data
-const listing = ref<any>(null)
+const listing = ref<Listing | null>(null)
 const listingId = route.params.listingId as string
 
 // Derived pricing for composable
@@ -621,6 +622,7 @@ onMounted(async () => {
     line-height: 1.4;
     display: -webkit-box;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
