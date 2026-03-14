@@ -2,6 +2,7 @@ import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { api } from '@/api/client'
 import { useCurrencyStore } from '@/stores/currency'
+import type { Booking } from '@/types'
 
 export function useBooking(listingId: string, pricePerNight: number) {
     const router = useRouter()
@@ -48,7 +49,7 @@ export function useBooking(listingId: string, pricePerNight: number) {
         loading.value = true
         error.value = ''
         try {
-            const payload = {
+            const payload: Partial<Booking> = {
                 listingId,
                 checkIn: bookingData.value.checkIn,
                 checkOut: bookingData.value.checkOut,
@@ -62,9 +63,10 @@ export function useBooking(listingId: string, pricePerNight: number) {
             await new Promise(resolve => setTimeout(resolve, 1500))
 
             router.push({ name: 'booking-confirmation', params: { id: data.id } })
-        } catch (err: any) {
-            console.error('Booking failed', err)
-            error.value = err.response?.data?.message || 'Failed to complete booking'
+        } catch (err) {
+            const errorObj = err as any
+            console.error('Booking failed', errorObj)
+            error.value = errorObj.response?.data?.message || 'Failed to complete booking'
         } finally {
             loading.value = false
         }
