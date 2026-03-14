@@ -2,8 +2,8 @@
     <div class="checkout-page">
         <div class="container">
             <!-- Back Link -->
-            <button class="back-link" @click="router.back()">
-                <ChevronLeft :size="20" />
+            <button class="back-link" @click="router.back()" aria-label="Go back to previous page">
+                <ChevronLeft :size="20" aria-hidden="true" />
                 Request to book
             </button>
 
@@ -21,7 +21,7 @@
                                     <h3>Dates</h3>
                                     <p>{{ formattedCheckIn }} – {{ formattedCheckOut }}</p>
                                 </div>
-                                <button class="edit-link" @click="router.back()">Edit</button>
+                                <button class="edit-link" @click="router.back()" aria-label="Edit trip dates">Edit</button>
                             </div>
                         </div>
 
@@ -31,7 +31,7 @@
                                     <h3>Guests</h3>
                                     <p>{{ bookingData.adults }} guest{{ bookingData.adults > 1 ? 's' : '' }}</p>
                                 </div>
-                                <button class="edit-link" @click="router.back()">Edit</button>
+                                <button class="edit-link" @click="router.back()" aria-label="Edit guest count">Edit</button>
                             </div>
                         </div>
                     </section>
@@ -54,7 +54,7 @@
                             <div class="form-group full-width">
                                 <label>Card number</label>
                                 <div class="input-icon-wrapper">
-                                    <CreditCard class="input-icon" :size="18" />
+                                    <CreditCard class="input-icon" :size="18" aria-hidden="true" />
                                     <input v-model="bookingData.cardNumber" type="text"
                                         placeholder="0000 0000 0000 0000" maxlength="19" class="input-with-icon"
                                         @input="formatCardNumber" />
@@ -65,7 +65,7 @@
                                 <div class="form-group">
                                     <label>Expiration</label>
                                     <div class="input-icon-wrapper">
-                                        <Calendar class="input-icon" :size="18" />
+                                        <Calendar class="input-icon" :size="18" aria-hidden="true" />
                                         <input v-model="bookingData.cardExpiry" type="text" placeholder="MM / YY"
                                             maxlength="7" class="input-with-icon" @input="formatExpiry" />
                                     </div>
@@ -73,7 +73,7 @@
                                 <div class="form-group">
                                     <label>CVV</label>
                                     <div class="input-icon-wrapper">
-                                        <Lock class="input-icon" :size="18" />
+                                        <Lock class="input-icon" :size="18" aria-hidden="true" />
                                         <input v-model="bookingData.cardCvc" type="text" placeholder="123" maxlength="4"
                                             class="input-with-icon" />
                                     </div>
@@ -83,7 +83,7 @@
                             <div class="form-group full-width">
                                 <label>Cardholder name</label>
                                 <div class="input-icon-wrapper">
-                                    <User class="input-icon" :size="18" />
+                                    <User class="input-icon" :size="18" aria-hidden="true" />
                                     <input v-model="bookingData.cardName" type="text" placeholder="Name on card"
                                         class="input-with-icon" />
                                 </div>
@@ -120,13 +120,13 @@
                         <button class="confirm-btn" :disabled="!isFormValid || isProcessing" @click="confirmBooking">
                             <span v-if="isProcessing" class="spinner"></span>
                             <span v-else class="btn-content">
-                                <ShieldCheck :size="20" />
+                                <ShieldCheck :size="20" aria-hidden="true" />
                                 Confirm and pay
                             </span>
                         </button>
 
                         <div class="secure-badge">
-                            <Lock :size="14" />
+                            <Lock :size="14" aria-hidden="true" />
                             <span>Payments are secure and encrypted</span>
                         </div>
 
@@ -147,7 +147,7 @@
                                 <p class="listing-type">{{ listing.propertyType }}</p>
                                 <h3 class="listing-title">{{ listing.title }}</h3>
                                 <div class="listing-rating" v-if="listing.averageRating">
-                                    <Star :size="12" fill="currentColor" class="star-icon" />
+                                    <Star :size="12" fill="currentColor" class="star-icon" aria-hidden="true" />
                                     <span>{{ listing.averageRating }} ({{ listing.reviewCount }})</span>
                                 </div>
                             </div>
