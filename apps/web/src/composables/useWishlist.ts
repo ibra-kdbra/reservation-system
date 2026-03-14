@@ -1,10 +1,11 @@
 import { ref } from 'vue'
 import { api } from '@/api/client'
 import { useCurrencyStore } from '@/stores/currency'
+import type { Listing } from '@/types'
 
 export function useWishlist() {
     const currencyStore = useCurrencyStore()
-    const favorites = ref<any[]>([])
+    const favorites = ref<{ id: string; listing: Listing }[]>([])
     const loading = ref(true)
 
     async function fetchWishlist() {
