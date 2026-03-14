@@ -57,12 +57,14 @@
 - ✅ **Search UI** — New search results page with grid layout and filters
 - ✅ **Integration** — End-to-end flow from homepage to booking
 
-### Phase 8.5: Explore Page Revamp (100%)
-
-- ✅ **Backend Amenities** — Filtering logic for multiple amenities (AND logic)
-- ✅ **Advanced Filters** — New UI for Price Range, Guests, and Amenities
-- ✅ **Siem Reap Listing** — Replaced Bhutan listing with a unique Cambodia villa
 - ✅ **Refactored Search** — Clean integration of filters with URL synchronization
+
+### Phase 9: Quality & Accessibility (100%)
+
+- ✅ **Accessibility (A11y)** — ARIA support, keyboard navigation, and centralized focus trapping (`useFocusTrap`)
+- ✅ **API Documentation** — Complete Swagger/OpenAPI decorators for all backend DTOs
+- ✅ **Type Safety** — Eliminated `any` usages and fixed property access regressions across the app
+- ✅ **Refactoring** — Modularized focus management for better maintainability (ISO 25010)
 
 ## 🚀 How to Run
 
@@ -118,12 +120,12 @@ npm run dev
 
 | Metric | Count |
 |--------|-------|
-| **Total Files Created** | ~75 |
-| **Lines of Code** | ~8,500 |
+| **Total Files Created** | ~80 |
+| **Lines of Code** | ~9,200 |
 | **API Endpoints** | 30+ |
 | **Database Models** | 12 |
 | **Frontend Pages** | 12 |
-| **UI Components** | 15+ |
+| **UI Components** | 18+ |
 | **Asian Listings** | 16 |
 | **Supported Currencies** | 11 |
 
