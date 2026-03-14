@@ -1,7 +1,7 @@
 <template>
     <div class="reviews-section" v-if="reviews.length > 0">
         <h2 class="section-title">
-            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" style="margin-right: 8px;">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" style="margin-right: 8px;" aria-hidden="true">
                 <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z">
                 </path>
             </svg>
@@ -36,18 +36,18 @@
             </div>
         </div>
 
-        <button v-if="reviews.length > 6" class="show-all-btn" @click="isOpen = true">
+        <button v-if="reviews.length > 6" class="show-all-btn" @click="isOpen = true" aria-label="Show all reviews">
             Show all {{ reviewCount }} reviews
         </button>
 
         <!-- Reviews Modal -->
         <Teleport to="body">
             <div v-if="isOpen" class="modal-overlay" @click="isOpen = false">
-                <div class="modal-content" @click.stop>
+                <div class="modal-content" ref="modalRef" @click.stop role="dialog" aria-modal="true" aria-labelledby="reviews-title">
                     <div class="modal-header">
-                        <button class="close-btn" @click="isOpen = false">
+                        <button class="close-btn" @click="isOpen = false" aria-label="Close reviews modal">
                             <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2"
-                                fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                 <line x1="18" y1="6" x2="6" y2="18"></line>
                                 <line x1="6" y1="6" x2="18" y2="18"></line>
                             </svg>
@@ -55,9 +55,9 @@
                     </div>
 
                     <div class="modal-body">
-                        <h2 class="modal-title">
+                        <h2 class="modal-title" id="reviews-title">
                             <svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor"
-                                style="margin-right: 12px; color: var(--color-primary-500);">
+                                style="margin-right: 12px; color: var(--color-primary-500);" aria-hidden="true">
                                 <path
                                     d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z">
                                 </path>
@@ -88,7 +88,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, ref, watch, onMounted, onUnmounted } from 'vue'
+import { useFocusTrap } from '@/composables/useFocusTrap'
 
 const props = defineProps<{
     reviews: any[]
@@ -97,6 +98,22 @@ const props = defineProps<{
 }>()
 
 const isOpen = ref(false)
+const modalRef = ref<HTMLElement | null>(null)
+
+useFocusTrap(modalRef, isOpen)
+
+function handleKeydown(e: KeyboardEvent) {
+    if (!isOpen.value) return
+    if (e.key === 'Escape') isOpen.value = false
+}
+
+onMounted(() => {
+    window.addEventListener('keydown', handleKeydown)
+})
+
+onUnmounted(() => {
+    window.removeEventListener('keydown', handleKeydown)
+})
 
 const displayedReviews = computed(() => {
     return props.reviews.slice(0, 6)
