@@ -2,7 +2,7 @@
     <Teleport to="body">
         <Transition name="gallery-overlay">
             <div v-if="isOpen" class="gallery-overlay" @click.self="close">
-                <div class="gallery-container">
+                <div class="gallery-container" ref="galleryRef" role="dialog" aria-modal="true" aria-label="Photo Gallery">
                     <!-- Close button -->
                     <button class="gallery-close" @click="close" aria-label="Close gallery">
                         <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor"
@@ -17,7 +17,7 @@
 
                     <!-- Main image -->
                     <div class="gallery-main">
-                        <button class="gallery-nav prev" @click="prev" :disabled="currentIndex === 0">
+                        <button class="gallery-nav prev" @click="prev" :disabled="currentIndex === 0" aria-label="Previous photo">
                             <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor"
                                 stroke-width="2">
                                 <polyline points="15 18 9 12 15 6" />
@@ -27,7 +27,7 @@
                         <img :src="images[currentIndex]" :alt="`Photo ${currentIndex + 1}`" class="gallery-image"
                             @load="imageLoaded = true" />
 
-                        <button class="gallery-nav next" @click="next" :disabled="currentIndex === images.length - 1">
+                        <button class="gallery-nav next" @click="next" :disabled="currentIndex === images.length - 1" aria-label="Next photo">
                             <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor"
                                 stroke-width="2">
                                 <polyline points="9 18 15 12 9 6" />
@@ -38,7 +38,8 @@
                     <!-- Thumbnails -->
                     <div class="gallery-thumbs" v-if="images.length > 1">
                         <button v-for="(img, i) in images" :key="i" class="thumb"
-                            :class="{ active: i === currentIndex }" @click="currentIndex = i">
+                            :class="{ active: i === currentIndex }" @click="currentIndex = i"
+                            :aria-label="`View photo ${i + 1}`" :aria-current="i === currentIndex ? 'true' : 'false'">
                             <img :src="img" :alt="`Thumbnail ${i + 1}`" />
                         </button>
                     </div>
@@ -49,7 +50,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted, onBeforeUnmount } from 'vue'
+import { ref, watch, onMounted, onBeforeUnmount, toRef } from 'vue'
+import { useFocusTrap } from '@/composables/useFocusTrap'
 
 const props = defineProps<{
     images: string[]
@@ -63,6 +65,9 @@ const emit = defineEmits<{
 
 const currentIndex = ref(props.startIndex || 0)
 const imageLoaded = ref(false)
+const galleryRef = ref<HTMLElement | null>(null)
+
+useFocusTrap(galleryRef, toRef(props, 'isOpen'))
 
 watch(() => props.startIndex, (val) => {
     if (val !== undefined) currentIndex.value = val
