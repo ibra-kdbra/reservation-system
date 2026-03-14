@@ -57,7 +57,7 @@
       <div v-else class="listings-grid">
         <div v-for="listing in listings" :key="listing.id" class="listing-card" @click="goToListing(listing.id)">
           <div class="listing-image-wrap">
-            <img :src="listing.coverImage" :alt="listing.title" class="listing-image" loading="lazy" />
+            <img :src="listing.images?.[0] || 'https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&q=80&w=800'" :alt="listing.title" class="listing-image" loading="lazy" />
             <button class="favorite-btn">
               <Heart :size="20" class="heart-icon" />
             </button>
@@ -139,7 +139,7 @@ function goToListing(id: string) {
 }
 
 function handleApplyFilters(newFilters: SearchFiltersData) {
-    const query: any = { 
+    const query: Record<string, any> = { 
         ...route.query, 
         ...newFilters 
     }
