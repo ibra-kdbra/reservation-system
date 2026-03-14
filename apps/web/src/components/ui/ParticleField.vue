@@ -57,7 +57,7 @@ function createParticle(): Particle {
     baseX: x,
     baseY: y,
     size: props.minSize + Math.random() * (props.maxSize - props.minSize),
-    color: props.colors[Math.floor(Math.random() * props.colors.length)],
+    color: props.colors[Math.floor(Math.random() * props.colors.length)] || 'rgba(232,93,58,0.25)',
     vx: (Math.random() - 0.5) * props.speed,
     vy: (Math.random() - 0.5) * props.speed,
     alpha: 0.2 + Math.random() * 0.6,

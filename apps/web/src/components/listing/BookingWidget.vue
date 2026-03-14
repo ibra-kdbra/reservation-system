@@ -59,11 +59,11 @@
                 </div>
                 <div class="price-row">
                     <span>Cleaning fee</span>
-                    <span>{{ formatCurrency(cleaningFee) }}</span>
+                    <span>{{ formatCurrency(cleaningFee || 0) }}</span>
                 </div>
                 <div class="price-row">
                     <span>Service fee</span>
-                    <span>{{ formatCurrency(serviceFee) }}</span>
+                    <span>{{ formatCurrency(serviceFee || 0) }}</span>
                 </div>
                 <div class="total-row">
                     <span>Total</span>

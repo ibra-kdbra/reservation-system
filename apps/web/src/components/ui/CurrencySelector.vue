@@ -1,8 +1,8 @@
 <template>
     <div class="currency-selector" ref="selectorRef">
         <button class="currency-btn" @click="isOpen = !isOpen" :aria-expanded="isOpen">
-            <span class="currency-flag">{{ currencyStore.selected.flag }}</span>
-            <span class="currency-code">{{ currencyStore.selected.code }}</span>
+            <span class="currency-flag">{{ currencyStore.selected?.flag }}</span>
+            <span class="currency-code">{{ currencyStore.selected?.code }}</span>
             <svg class="chevron" :class="{ open: isOpen }" viewBox="0 0 20 20" fill="currentColor" width="14"
                 height="14">
                 <path fill-rule="evenodd"
@@ -32,7 +32,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue'
-import { useCurrencyStore } from '../../stores/currency'
+import { useCurrencyStore } from '@/stores/currency'
 
 const currencyStore = useCurrencyStore()
 const isOpen = ref(false)

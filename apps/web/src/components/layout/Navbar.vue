@@ -106,8 +106,8 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAuthStore } from '../../stores/auth'
-import CurrencySelector from '../ui/CurrencySelector.vue'
+import { useAuthStore } from '@/stores/auth'
+import CurrencySelector from '@/components/ui/CurrencySelector.vue'
 
 const router = useRouter()
 const authStore = useAuthStore()

@@ -59,7 +59,7 @@ function initMap(lat: number, lng: number) {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
         subdomains: 'abcd',
         maxZoom: 19
-    }).addTo(map.value)
+    }).addTo(map.value as any)
 
     // Add a circle to represent precise location without giving exact address (Airbnb style)
     L.circle([lat, lng], {
@@ -67,7 +67,7 @@ function initMap(lat: number, lng: number) {
         fillColor: 'var(--color-primary-500)',
         fillOpacity: 0.2,
         radius: 800 // meters
-    }).addTo(map.value)
+    }).addTo(map.value as any)
 
     // Add a central icon
     const icon = L.divIcon({
@@ -79,7 +79,7 @@ function initMap(lat: number, lng: number) {
         iconAnchor: [24, 24]
     })
 
-    L.marker([lat, lng], { icon }).addTo(map.value)
+    L.marker([lat, lng], { icon }).addTo(map.value as any)
 }
 </script>
 
