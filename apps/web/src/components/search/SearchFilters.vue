@@ -3,11 +3,11 @@
         <Transition name="modal-fade">
             <div class="modal-overlay" @click.self="$emit('close')">
                 <Transition name="modal-slide">
-                    <div class="modal-content">
+                    <div class="modal-content" ref="modalRef" role="dialog" aria-modal="true" aria-labelledby="modal-title">
                         <!-- Modal Header -->
                         <div class="modal-header">
-                            <button class="btn-close" @click="$emit('close')">×</button>
-                            <h2 class="modal-title">Filters</h2>
+                            <button class="btn-close" @click="$emit('close')" aria-label="Close filters">×</button>
+                            <h2 class="modal-title" id="modal-title">Filters</h2>
                             <div class="header-spacer"></div>
                         </div>
 
@@ -49,6 +49,8 @@
                                         class="stepper-btn"
                                         :class="{ active: filters.guests === n }"
                                         @click="filters.guests = filters.guests === n ? 1 : n"
+                                        :aria-label="`${n === 8 ? '8 or more' : n} guests`"
+                                        :aria-pressed="filters.guests === n"
                                     >
                                         {{ n === 8 ? '8+' : n }}
                                     </button>
@@ -84,7 +86,8 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, watch } from 'vue'
+import { reactive, watch, ref, onMounted, onUnmounted } from 'vue'
+import { useFocusTrap } from '@/composables/useFocusTrap'
 import type { SearchFiltersData } from '@/composables/useListingSearch'
 
 const props = defineProps<{
@@ -117,6 +120,23 @@ const filters = reactive({
     maxPrice: props.initialFilters.maxPrice || null,
     guests: props.initialFilters.guests || 1,
     amenities: [...(props.initialFilters.amenities || [])],
+})
+
+const modalRef = ref<HTMLElement | null>(null)
+const isOpen = ref(true) // Always open when mounted as it's a conditional component
+
+useFocusTrap(modalRef, isOpen)
+
+onMounted(() => {
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') emit('close')
+    })
+})
+
+onUnmounted(() => {
+    window.removeEventListener('keydown', (e) => {
+        if (e.key === 'Escape') emit('close')
+    })
 })
 
 watch(() => props.initialFilters, (newFilters) => {
