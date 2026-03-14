@@ -16,7 +16,7 @@
         @toggle-save="toggleSave" />
 
       <!-- Gallery -->
-      <ListingGallery :images="listing.images" :cover-image="listing.coverImage" :title="listing.title"
+      <ListingGallery :images="listing.images" :cover-image="listing.images?.[0] || ''" :title="listing.title"
         @open="openGallery" />
 
       <!-- Main Layout -->
@@ -37,7 +37,7 @@
           </div>
 
           <!-- Host Info -->
-          <ListingHost :host="listing.host" :review-count="124" :is-superhost="true" />
+          <ListingHost :host="listing.host" :review-count="listing.reviewCount || 0" :is-superhost="true" />
 
           <!-- Description -->
           <ListingDescription :description="listing.description" />
@@ -46,7 +46,7 @@
           <ListingAmenities :amenities="listing.amenities" />
 
           <!-- Reviews -->
-          <ListingReviews v-if="listing.reviewCount > 0" :reviews="reviews" :rating="listing.averageRating"
+          <ListingReviews v-if="listing.reviewCount && listing.reviewCount > 0" :reviews="reviews" :rating="listing.averageRating"
             :review-count="listing.reviewCount" />
 
           <!-- Map -->
@@ -65,7 +65,7 @@
     </div>
 
     <!-- Modals -->
-    <PhotoGallery :images="listing?.images || [listing?.coverImage || '']" :is-open="galleryOpen"
+    <PhotoGallery :images="listing?.images || []" :is-open="galleryOpen"
       :start-index="galleryIndex" @close="galleryOpen = false" />
     <ShareModal v-if="listing" :is-open="shareOpen" :listing="listing" @close="shareOpen = false" />
   </div>
@@ -89,13 +89,14 @@ import ListingMap from '@/components/listing/ListingMap.vue'
 import BookingWidget from '@/components/listing/BookingWidget.vue'
 import PhotoGallery from '@/components/ui/PhotoGallery.vue'
 import ShareModal from '@/components/ui/ShareModal.vue'
+import type { Listing } from '@/types'
 
 const route = useRoute()
 const router = useRouter()
 const authStore = useAuthStore()
 const toast = useToast()
 
-const listing = ref<any>(null)
+const listing = ref<Listing | null>(null)
 const reviews = ref<any[]>([])
 const loading = ref(true)
 
@@ -118,8 +119,8 @@ onMounted(async () => {
     if (authStore.isAuthenticated) {
       try {
         const { data: favData } = await api.isFavorite(data.id)
-        isSaved.value = favData.isFavorite
-        savedId.value = favData.favoriteId || null
+        isSaved.value = favData.data.isFavorite
+        savedId.value = favData.data.favoriteId || null
       } catch { /* ignore */ }
     }
   } catch (error) {
@@ -148,7 +149,7 @@ async function toggleSave() {
     } else if (listing.value) {
       const { data } = await api.addFavorite(listing.value.id)
       isSaved.value = true
-      savedId.value = data.id
+      savedId.value = data.data.favoriteId || data.id // Fallback for backward compatibility if needed
       toast.success('Added to wishlist ❤️')
     }
   } catch {
@@ -166,6 +167,8 @@ function handleBook() {
     toast.warning('Please select check-in and check-out dates')
     return
   }
+  if (!listing.value) return
+
   router.push({
     name: 'checkout',
     params: { listingId: listing.value.id },
