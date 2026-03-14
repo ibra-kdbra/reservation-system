@@ -10,7 +10,7 @@
 
         <div class="host-stats">
             <div class="stat-item">
-                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">
                     <path
                         d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z">
                     </path>
@@ -19,7 +19,7 @@
             </div>
             <div class="stat-item">
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round">
+                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                     <polyline points="22 4 12 14.01 9 11.01"></polyline>
                 </svg>
@@ -27,7 +27,7 @@
             </div>
             <div class="stat-item" v-if="isSuperhost">
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round">
+                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <circle cx="12" cy="8" r="7"></circle>
                     <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
                 </svg>
@@ -39,7 +39,7 @@
             {{ host.bio }}
         </div>
 
-        <button class="contact-btn">
+        <button class="contact-btn" aria-label="Contact the host">
             Contact Host
         </button>
     </div>
@@ -50,7 +50,7 @@ import { computed } from 'vue'
 
 const props = defineProps<{
     host?: {
-        firstName: string
+        firstName?: string
         avatar?: string
         bio?: string
         createdAt?: string
