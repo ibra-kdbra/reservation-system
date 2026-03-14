@@ -97,7 +97,7 @@
                             <tr v-for="listing in myListings" :key="listing.id">
                                 <td>
                                     <div class="listing-cell">
-                                        <img :src="listing.coverImage" :alt="listing.title" class="listing-thumb" />
+                                        <img :src="listing.images?.[0] || 'https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&q=80&w=800'" :alt="listing.title" class="listing-thumb" />
                                         <div>
                                             <router-link :to="`/listings/${listing.id}`" class="listing-title-link">{{
                                                 listing.title }}</router-link>
@@ -162,23 +162,24 @@
 import { ref, computed, onMounted } from 'vue'
 import { api } from '@/api/client'
 import { useCurrencyStore } from '@/stores/currency'
+import type { Listing, Booking } from '@/types'
 
 const currencyStore = useCurrencyStore()
-const myListings = ref<any[]>([])
-const hostBookings = ref<any[]>([])
+const myListings = ref<Listing[]>([])
+const hostBookings = ref<Booking[]>([])
 const loadingListings = ref(true)
 const loadingBookings = ref(true)
 
 const totalRevenue = computed(() =>
     hostBookings.value
-        .filter((b: any) => b.status === 'COMPLETED' || b.status === 'CONFIRMED')
-        .reduce((sum: number, b: any) => sum + Number(b.totalPrice || 0), 0)
+        .filter(b => b.status === 'COMPLETED' || b.status === 'CONFIRMED')
+        .reduce((sum: number, b) => sum + Number(b.totalPrice || 0), 0)
 )
 
 const avgRating = computed(() => {
-    const rated = myListings.value.filter((l: any) => l.averageRating)
+    const rated = myListings.value.filter(l => l.averageRating)
     if (rated.length === 0) return 0
-    return rated.reduce((sum: number, l: any) => sum + l.averageRating, 0) / rated.length
+    return rated.reduce((sum: number, l) => sum + (l.averageRating || 0), 0) / rated.length
 })
 
 function formatDate(dateStr: string) {
@@ -188,7 +189,7 @@ function formatDate(dateStr: string) {
 onMounted(async () => {
     try {
         const { data } = await api.getMyListings()
-        myListings.value = Array.isArray(data) ? data : (data.listings || [])
+        myListings.value = data
     } catch (err) {
         console.error('Failed to load listings:', err)
     } finally {
@@ -197,7 +198,7 @@ onMounted(async () => {
 
     try {
         const { data } = await api.getHostBookings()
-        hostBookings.value = Array.isArray(data) ? data : (data.bookings || [])
+        hostBookings.value = data
     } catch (err) {
         console.error('Failed to load bookings:', err)
     } finally {
