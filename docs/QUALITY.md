@@ -38,11 +38,11 @@ This document evaluates the project against the **ISO/IEC 25010:2023** product q
 | Appropriateness recognisability | ✅ | Airbnb-inspired familiar layout |
 | Learnability | ✅ | Self-explanatory flows, toast confirmations |
 | Operability | ✅ | Responsive design, keyboard-friendly forms |
-| Accessibility (a11y) | ⚠️ | Some icon buttons missing `aria-label`; modals lack focus trap |
+| Accessibility (a11y) | ✅ | Aria-labels, focus traps, keyboard navigation |
 | User error protection | ✅ | Form validation with clear error messages |
 | UI aesthetics | ✅ | Consistent design system, animations, dark gradients |
 
-**Roadmap**: Add `aria-label` to all icon-only buttons; add `role="dialog"` + focus trap to modals.
+**Roadmap**: Accessibility targets met; future work includes full WCAG 2.1 auditing.
 
 ### 5. Reliability ❌ Needs Work
 
@@ -72,10 +72,10 @@ See [SECURITY.md](./SECURITY.md) for full details.
 | Sub-characteristic | Status | Evidence |
 |---|---|---|
 | Modularity | ✅ | NestJS modules; Vue composables |
-| Reusability | ✅ | `useBooking`, `useWishlist`, `useListingSearch` composables |
-| Analysability | ⚠️ | Many `any` types still present |
+| Reusability | ✅ | `useBooking`, `useWishlist`, `useListingSearch`, `useFocusTrap` |
+| Analysability | ✅ | Removed `any` usages; added strict DTO types with Swagger |
 | Modifiability | ✅ | `@/` alias, CSS variables, design tokens |
-| Testability | ⚠️ | Composables are testable but untested |
+| Testability | ✅ | Vitest configured for composables and stores |
 
 ### 8. Portability ✅ Good
 
@@ -93,10 +93,10 @@ Tracked step-by-step in order of impact on grade:
 
 | Step | Area | Status |
 |---|---|---|
-| **Step 1** | Unit Tests (Vitest for composables) | 🔄 In Progress |
-| **Step 2** | TypeScript interfaces (replace `any`) | 📋 Planned |
-| **Step 3** | Consistent error handling | 📋 Planned |
-| **Step 4** | Accessibility (aria, focus traps) | 📋 Planned |
-| **Step 5** | Swagger decorator completeness | 📋 Planned |
+| **Step 1** | Unit Tests (Vitest for composables) | ✅ Completed |
+| **Step 2** | TypeScript interfaces (replace `any`) | ✅ Completed |
+| **Step 3** | Consistent error handling | ✅ Completed |
+| **Step 4** | Accessibility (aria, focus traps) | ✅ Completed |
+| **Step 5** | Swagger decorator completeness | ✅ Completed |
 
 See [TESTING.md](./TESTING.md) for the full testing strategy.
