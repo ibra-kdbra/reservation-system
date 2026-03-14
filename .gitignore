@@ -75,3 +75,7 @@ apps/api/prisma/migrations/
 *.pem
 .vercel
 .netlify
+
+# Playwright
+playwright-report
+test-results
