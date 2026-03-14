@@ -6,7 +6,7 @@
                 <span class="unit">night</span>
             </div>
             <div class="rating" v-if="rating">
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true">
                     <path
                         d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z">
                     </path>
@@ -19,34 +19,35 @@
         <div class="booking-form">
             <div class="date-picker">
                 <div class="date-input">
-                    <label>CHECK-IN</label>
-                    <input type="date" :value="checkIn"
+                    <label for="check-in">CHECK-IN</label>
+                    <input id="check-in" type="date" :value="checkIn"
                         @input="$emit('update:checkIn', ($event.target as HTMLInputElement).value)"
                         placeholder="Add date" />
                 </div>
                 <div class="date-input">
-                    <label>CHECKOUT</label>
-                    <input type="date" :value="checkOut"
+                    <label for="check-out">CHECKOUT</label>
+                    <input id="check-out" type="date" :value="checkOut"
                         @input="$emit('update:checkOut', ($event.target as HTMLInputElement).value)"
                         placeholder="Add date" />
                 </div>
             </div>
 
             <div class="guest-picker">
-                <label>GUESTS</label>
-                <select :value="guests"
-                    @change="$emit('update:guests', Number(($event.target as HTMLSelectElement).value))">
+                <label for="guest-select">GUESTS</label>
+                <select id="guest-select" :value="guests"
+                    @change="$emit('update:guests', Number(($event.target as HTMLSelectElement).value))"
+                    aria-label="Number of guests">
                     <option v-for="n in maxGuests" :key="n" :value="n">
                         {{ n }} guest{{ n > 1 ? 's' : '' }}
                     </option>
                 </select>
                 <svg class="chevron-down" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
-                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <polyline points="6 9 12 15 18 9"></polyline>
                 </svg>
             </div>
 
-            <button class="reserve-btn" @click="$emit('book')" :disabled="!checkIn || !checkOut">
+            <button class="reserve-btn" @click="$emit('book')" :disabled="!checkIn || !checkOut" aria-label="Reserve this listing">
                 Reserve
             </button>
 
