@@ -27,22 +27,23 @@ describe('useToast', () => {
     it('adds a success toast', () => {
         const { toasts, success } = useToast()
         success('Booking confirmed!')
-        expect(toasts.value).toHaveLength(1)
-        expect(toasts.value[0].type).toBe('success')
-        expect(toasts.value[0].message).toBe('Booking confirmed!')
+        expect(toasts.value[0]).toBeDefined()
+        expect(toasts.value[0]!.type).toBe('success')
+        expect(toasts.value[0]!.message).toBe('Booking confirmed!')
     })
 
     it('adds an error toast', () => {
         const { toasts, error } = useToast()
         error('Something went wrong')
-        expect(toasts.value).toHaveLength(1)
-        expect(toasts.value[0].type).toBe('error')
+        expect(toasts.value[0]).toBeDefined()
+        expect(toasts.value[0]!.type).toBe('error')
     })
 
     it('removes a toast by id', () => {
         const { toasts, success, remove } = useToast()
         success('Hello')
-        const id = toasts.value[0].id
+        expect(toasts.value).toHaveLength(1)
+        const id = toasts.value[0]!.id
         remove(id)
         expect(toasts.value).toHaveLength(0)
     })
