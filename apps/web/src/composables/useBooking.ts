@@ -63,10 +63,10 @@ export function useBooking(listingId: string, pricePerNight: number) {
             await new Promise(resolve => setTimeout(resolve, 1500))
 
             router.push({ name: 'booking-confirmation', params: { id: data.id } })
-        } catch (err) {
-            const errorObj = err as any
-            console.error('Booking failed', errorObj)
-            error.value = errorObj.response?.data?.message || 'Failed to complete booking'
+        } catch (err: any) {
+            // Global interceptor already shows a toast, but we still want the local error ref
+            console.error('Booking failed', err)
+            error.value = err.response?.data?.message || 'Failed to complete booking'
         } finally {
             loading.value = false
         }
