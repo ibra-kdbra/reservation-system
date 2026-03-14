@@ -39,12 +39,14 @@ export const useCurrencyStore = defineStore('currency', () => {
   }
 
   function convert(usdAmount: number): number {
-    return usdAmount * selected.value.rate
+    return usdAmount * (selected.value?.rate || 1)
   }
 
   function format(usdAmount: number): string {
     const converted = convert(usdAmount)
     const info = selected.value
+
+    if (!info) return `${usdAmount}`
 
     // Special formatting for currencies with large numbers
     if (info.rate > 1000) {
