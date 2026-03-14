@@ -6,10 +6,10 @@
                 {{ description }}
             </p>
         </div>
-        <button v-if="shouldShowButton" class="show-more-btn" @click="toggleExpand">
+        <button v-if="shouldShowButton" class="show-more-btn" @click="toggleExpand" :aria-expanded="isExpanded" aria-label="Show more about this place">
             {{ isExpanded ? 'Show less' : 'Show more' }}
             <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"
-                :class="{ 'rotate': isExpanded }">
+                :class="{ 'rotate': isExpanded }" aria-hidden="true">
                 <polyline points="6 9 12 15 18 9"></polyline>
             </svg>
         </button>
