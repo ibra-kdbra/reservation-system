@@ -51,7 +51,7 @@
                             <h3>{{ fav.listing.title }}</h3>
                             <p class="card-location">{{ fav.listing.city }}, {{ fav.listing.country }}</p>
                             <p class="card-price">
-                                <strong>{{ currencyStore.format(fav.listing.pricePerNight) }}</strong> / night
+                                <strong>{{ formatPrice(fav.listing.pricePerNight) }}</strong> / night
                             </p>
                         </div>
                     </router-link>
@@ -62,33 +62,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { api } from '../../api/client'
-import { useCurrencyStore } from '../../stores/currency'
+import { onMounted } from 'vue'
+import { useWishlist } from '@/composables/useWishlist'
 
-const currencyStore = useCurrencyStore()
-const loading = ref(true)
-const favorites = ref<any[]>([])
+const { favorites, loading, fetchWishlist, removeFavorite, formatPrice } = useWishlist()
 
-onMounted(async () => {
-    try {
-        const { data } = await api.getFavorites()
-        favorites.value = data
-    } catch (err) {
-        console.error('Failed to load favorites:', err)
-    } finally {
-        loading.value = false
-    }
+onMounted(() => {
+    fetchWishlist()
 })
-
-async function removeFavorite(favoriteId: string) {
-    try {
-        await api.removeFavorite(favoriteId)
-        favorites.value = favorites.value.filter((f: any) => f.id !== favoriteId)
-    } catch (err) {
-        console.error('Failed to remove favorite:', err)
-    }
-}
 </script>
 
 <style scoped>

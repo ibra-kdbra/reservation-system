@@ -160,8 +160,8 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { api } from '../../api/client'
-import { useCurrencyStore } from '../../stores/currency'
+import { api } from '@/api/client'
+import { useCurrencyStore } from '@/stores/currency'
 
 const currencyStore = useCurrencyStore()
 const myListings = ref<any[]>([])

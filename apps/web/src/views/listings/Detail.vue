@@ -74,21 +74,21 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { useAuthStore } from '../../stores/auth'
-import { api } from '../../api/client'
-import { useToast } from '../../composables/useToast'
+import { useAuthStore } from '@/stores/auth'
+import { api } from '@/api/client'
+import { useToast } from '@/composables/useToast'
 
 // Components
-import ListingHeader from '../../components/listing/ListingHeader.vue'
-import ListingGallery from '../../components/listing/ListingGallery.vue'
-import ListingHost from '../../components/listing/ListingHost.vue'
-import ListingDescription from '../../components/listing/ListingDescription.vue'
-import ListingAmenities from '../../components/listing/ListingAmenities.vue'
-import ListingReviews from '../../components/listing/ListingReviews.vue'
-import ListingMap from '../../components/listing/ListingMap.vue'
-import BookingWidget from '../../components/listing/BookingWidget.vue'
-import PhotoGallery from '../../components/ui/PhotoGallery.vue'
-import ShareModal from '../../components/ui/ShareModal.vue'
+import ListingHeader from '@/components/listing/ListingHeader.vue'
+import ListingGallery from '@/components/listing/ListingGallery.vue'
+import ListingHost from '@/components/listing/ListingHost.vue'
+import ListingDescription from '@/components/listing/ListingDescription.vue'
+import ListingAmenities from '@/components/listing/ListingAmenities.vue'
+import ListingReviews from '@/components/listing/ListingReviews.vue'
+import ListingMap from '@/components/listing/ListingMap.vue'
+import BookingWidget from '@/components/listing/BookingWidget.vue'
+import PhotoGallery from '@/components/ui/PhotoGallery.vue'
+import ShareModal from '@/components/ui/ShareModal.vue'
 
 const route = useRoute()
 const router = useRouter()

@@ -78,9 +78,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { useAuthStore } from '../../stores/auth'
-import { useToast } from '../../composables/useToast'
-import MagneticButton from '../../components/ui/MagneticButton.vue'
+import { useAuthStore } from '@/stores/auth'
+import { useToast } from '@/composables/useToast'
+import MagneticButton from '@/components/ui/MagneticButton.vue'
 
 const toast = useToast()
 

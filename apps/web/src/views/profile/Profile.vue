@@ -77,8 +77,8 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { useAuthStore } from '../../stores/auth'
-import { api } from '../../api/client'
+import { useAuthStore } from '@/stores/auth'
+import { api } from '@/api/client'
 
 const authStore = useAuthStore()
 const user = computed(() => authStore.user)

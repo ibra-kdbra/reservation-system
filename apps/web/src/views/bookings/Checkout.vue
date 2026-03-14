@@ -159,17 +159,17 @@
                         <h3 class="price-title">Price details</h3>
                         <div class="price-rows">
                             <div class="price-row">
-                                <span>{{ formatCurrency(pricePerNight) }} x {{ nights }} night{{ nights > 1 ? 's' : ''
+                                <span>{{ formatPrice(pricePerNight) }} x {{ nights }} night{{ nights > 1 ? 's' : ''
                                 }}</span>
-                                <span>{{ formatCurrency(pricePerNight * nights) }}</span>
+                                <span>{{ formatPrice(pricePerNight * nights) }}</span>
                             </div>
                             <div class="price-row" v-if="cleaningFee">
                                 <span>Cleaning fee</span>
-                                <span>{{ formatCurrency(cleaningFee) }}</span>
+                                <span>{{ formatPrice(cleaningFee) }}</span>
                             </div>
                             <div class="price-row" v-if="serviceFee">
                                 <span>Service fee</span>
-                                <span>{{ formatCurrency(serviceFee) }}</span>
+                                <span>{{ formatPrice(serviceFee) }}</span>
                             </div>
                         </div>
 
@@ -177,7 +177,7 @@
 
                         <div class="total-row">
                             <span>Total (USD)</span>
-                            <span>{{ formatCurrency(totalPrice) }}</span>
+                            <span>{{ formatPrice(totalPrice) }}</span>
                         </div>
                     </div>
                 </aside>
@@ -187,19 +187,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { useAuthStore } from '../../stores/auth'
-import { api } from '../../api/client'
-import { useToast } from '../../composables/useToast'
-import { useBooking } from '../../composables/useBooking'
+import { api } from '@/api/client'
+import { useToast } from '@/composables/useToast'
+import { useBooking } from '@/composables/useBooking'
 import {
     ChevronLeft, CreditCard, Calendar, Lock, User, ShieldCheck, Star
 } from 'lucide-vue-next'
 
 const route = useRoute()
 const router = useRouter()
-const authStore = useAuthStore()
 const toast = useToast()
 
 // Listing data
@@ -215,9 +213,12 @@ const {
     error: errorMessage,
     bookingData,
     nights,
-    totalPrice: calculatedTotal, // Base total from composable
-    submitBooking
-} = useBooking(listingId, pricePerNight)
+    totalPrice: calculatedTotal,
+    formattedCheckIn,
+    formattedCheckOut,
+    submitBooking,
+    formatPrice
+} = useBooking(listingId, pricePerNight.value)
 
 // Sync query params to bookingData
 bookingData.value.checkIn = route.query.checkIn as string || ''
@@ -231,16 +232,6 @@ const serviceFee = computed(() => Number(listing.value?.serviceFee) || 0)
 // Total override to include fees
 const totalPrice = computed(() => {
     return calculatedTotal.value + cleaningFee.value + serviceFee.value
-})
-
-const formattedCheckIn = computed(() => {
-    if (!bookingData.value.checkIn) return ''
-    return new Date(bookingData.value.checkIn).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-})
-
-const formattedCheckOut = computed(() => {
-    if (!bookingData.value.checkOut) return ''
-    return new Date(bookingData.value.checkOut).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 })
 
 // Validation
@@ -267,14 +258,6 @@ function formatExpiry(e: Event) {
         val = val.slice(0, 2) + ' / ' + val.slice(2)
     }
     bookingData.value.cardExpiry = val
-}
-
-function formatCurrency(amount: number) {
-    return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-        minimumFractionDigits: 0
-    }).format(amount)
 }
 
 // Actions

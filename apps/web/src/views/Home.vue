@@ -258,10 +258,10 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { api } from '../api/client'
-import { useTimeTheme } from '../composables/useTimeTheme'
-import { useScrollReveal } from '../composables/useScrollReveal'
-import MagneticButton from '../components/ui/MagneticButton.vue'
+import { api } from '@/api/client'
+import { useTimeTheme } from '@/composables/useTimeTheme'
+import { useScrollReveal } from '@/composables/useScrollReveal'
+import MagneticButton from '@/components/ui/MagneticButton.vue'
 
 const router = useRouter()
 const { theme } = useTimeTheme()
@@ -338,7 +338,7 @@ function handleSearch() {
   if (searchQuery.value.trim()) query.city = searchQuery.value
   if (checkIn.value) query.checkIn = checkIn.value
   if (checkOut.value) query.checkOut = checkOut.value
-  if (guests.value) query.guests = guests.value
+  if (guests.value) (query as any).guests = String(guests.value)
   router.push({ name: 'search', query })
 }
 

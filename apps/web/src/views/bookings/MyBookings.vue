@@ -71,7 +71,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { api } from '../../api/client'
+import { api } from '@/api/client'
 
 const bookings = ref<any[]>([])
 const loading = ref(true)

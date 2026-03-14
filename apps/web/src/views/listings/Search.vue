@@ -1,64 +1,44 @@
 <template>
   <div class="search-page">
-    <!-- Search Header -->
+    <!-- Redesigned Search Header -->
     <header class="search-header">
       <div class="container header-content">
-        <!-- Logo -->
-        <router-link to="/" class="logo">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" class="logo-icon">
-            <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round" />
-            <path d="M9 22V12h6v10" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-              stroke-linejoin="round" />
-          </svg>
-          <span class="logo-text">NestAsia</span>
-        </router-link>
-
-        <!-- Compact Search Bar -->
-        <div class="compact-search">
-          <div class="search-divider"></div>
-          <input v-model="filters.city" placeholder="Anywhere" class="search-input location"
-            @keyup.enter="refreshSearch" />
-          <div class="search-divider"></div>
-          <input type="date" v-model="filters.checkIn" class="search-input date" @change="refreshSearch" />
-          <div class="search-divider"></div>
-          <input type="date" v-model="filters.checkOut" class="search-input date" @change="refreshSearch" />
-          <div class="search-divider"></div>
-          <div class="search-button-wrap">
-            <button class="search-btn" @click="refreshSearch">
-              <Search class="search-icon" :size="16" />
+        <!-- Categories Carousel -->
+        <div class="categories-container">
+          <div class="categories-wrapper">
+            <button 
+              v-for="category in categories" 
+              :key="category.value"
+              class="category-item"
+              :class="{ active: filters.propertyType === category.value }"
+              @click="toggleType(category.value)"
+            >
+              <span class="category-icon">{{ category.icon }}</span>
+              <span class="category-label">{{ category.label }}</span>
             </button>
           </div>
         </div>
 
-        <!-- User Menu (Placeholder) -->
-        <div class="user-menu">
-          <div class="menu-btn">
-            <Menu :size="16" />
-            <div class="avatar-placeholder">
-              <User :size="16" />
-            </div>
-          </div>
+        <!-- Filter Action -->
+        <div class="header-actions">
+           <button class="filters-trigger-btn" @click="showFiltersModal = true">
+             <SlidersHorizontal :size="16" />
+             <span>Filters</span>
+             <span v-if="activeFiltersCount > 0" class="filter-count">{{ activeFiltersCount }}</span>
+           </button>
         </div>
       </div>
     </header>
 
-    <!-- Filters Bar -->
-    <div class="filters-bar">
-      <div class="container filters-content">
-        <SearchFilters :initial-filters="filters" @apply="handleApplyFilters" />
-        
-        <!-- Active Filter Chips (Optional: show what's active if not in panel) -->
-        <div class="active-filters-list">
-          <button v-if="filters.propertyType" class="chip active" @click="toggleType('')">
-             {{ formatType(filters.propertyType) }} <span class="remove-x">×</span>
-          </button>
-           <button v-if="filters.minPrice || filters.maxPrice" class="chip active" @click="clearPrice">
-             {{ formatPriceRange() }} <span class="remove-x">×</span>
-          </button>
-        </div>
-      </div>
-    </div>
+    <!-- Advanced Filters Modal -->
+    <SearchFilters 
+      v-if="showFiltersModal" 
+      :initial-filters="filters" 
+      @close="showFiltersModal = false"
+      @apply="handleApplyFilters" 
+    />
+
+
 
     <!-- Main Content -->
     <main class="container main-content">
@@ -110,21 +90,43 @@
 </template>
 
 <script setup lang="ts">
+import { ref, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { useListingSearch } from '../../composables/useListingSearch'
-import { Search, Menu, User, Heart, Star } from 'lucide-vue-next' // Removed ChevronDown as it was used in old filters
-import SearchFilters from '../../components/search/SearchFilters.vue'
+import { useListingSearch } from '@/composables/useListingSearch'
+import type { SearchFiltersData } from '@/composables/useListingSearch'
+import { SlidersHorizontal, Heart, Star } from 'lucide-vue-next'
+import SearchFilters from '@/components/search/SearchFilters.vue'
 
 const router = useRouter()
 const route = useRoute()
+
+const showFiltersModal = ref(false)
+
 const {
   loading,
   listings,
   filters,
-  refreshSearch,
   toggleType,
   clearFilters
 } = useListingSearch()
+
+const categories = [
+  { value: 'APARTMENT', label: 'Apartments', icon: '🏢' },
+  { value: 'HOUSE', label: 'Houses', icon: '🏠' },
+  { value: 'VILLA', label: 'Villas', icon: '🏰' },
+  { value: 'STUDIO', label: 'Studios', icon: '🏙️' },
+  { value: 'LOFT', label: 'Lofts', icon: '🎨' },
+  { value: 'ROOM', label: 'Rooms', icon: '🛏️' },
+  { value: 'COTTAGE', label: 'Cottages', icon: '🏡' },
+]
+
+const activeFiltersCount = computed(() => {
+  let count = 0
+  if (filters.minPrice || filters.maxPrice) count++
+  if (filters.guests > 1) count++
+  if (filters.amenities?.length > 0) count++
+  return count
+})
 
 function goToListing(id: string) {
   // Pass dates to detail page if selected
@@ -136,7 +138,7 @@ function goToListing(id: string) {
   router.push({ name: 'listing-detail', params: { id }, query })
 }
 
-function handleApplyFilters(newFilters: any) {
+function handleApplyFilters(newFilters: SearchFiltersData) {
     const query: any = { 
         ...route.query, 
         ...newFilters 
@@ -156,28 +158,7 @@ function handleApplyFilters(newFilters: any) {
     router.push({ query })
 }
 
-function clearPrice() {
-    const query: any = { ...route.query }
-    delete query.minPrice
-    delete query.maxPrice
-    router.push({ query })
-}
-
 // Helpers
-function formatType(type: string) {
-  if (!type) return ''
-  return type.charAt(0) + type.slice(1).toLowerCase() + 's'
-}
-
-function formatPriceRange() {
-    const min = filters.minPrice
-    const max = filters.maxPrice
-    if (min && max) return `$${min} - $${max}`
-    if (min) return `$${min}+`
-    if (max) return `Up to $${max}`
-    return ''
-}
-
 function formatDateRange() {
   if (filters.checkIn && filters.checkOut) {
     const start = new Date(filters.checkIn)
@@ -211,184 +192,95 @@ function formatDateRange() {
   height: 100%;
 }
 
-.logo {
+/* Categories Carousel */
+.categories-container {
+  flex: 1;
+  overflow: hidden;
+  margin-right: 24px;
+}
+
+.categories-wrapper {
   display: flex;
   align-items: center;
-  gap: 8px;
-  text-decoration: none;
-  color: var(--color-primary-600);
-}
-
-.logo-text {
-  font-weight: 800;
-  font-size: 1.25rem;
-  letter-spacing: -0.02em;
-}
-
-/* Compact Search Bar */
-.compact-search {
-  display: flex;
-  align-items: center;
-  background: white;
-  border: 1px solid var(--color-gray-300);
-  border-radius: var(--radius-full);
-  padding: 4px 8px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.05);
-  transition: box-shadow 0.2s;
-}
-
-.compact-search:hover {
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 6px 16px rgba(0, 0, 0, 0.08);
-}
-
-.search-input {
-  border: none;
-  background: transparent;
-  padding: 0 16px;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--color-gray-900);
-  outline: none;
-  width: 120px;
-}
-
-.search-input.location {
-  width: 140px;
-  font-weight: 600;
-}
-
-.search-input::placeholder {
-  color: var(--color-gray-900);
-}
-
-.search-divider {
-  width: 1px;
-  height: 24px;
-  background-color: var(--color-gray-300);
-}
-
-.search-btn {
-  background: var(--color-primary-600);
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  margin-left: 8px;
-}
-
-/* User Menu */
-.menu-btn {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 5px 5px 5px 12px;
-  border: 1px solid var(--color-gray-300);
-  border-radius: var(--radius-full);
-  cursor: pointer;
-  transition: box-shadow 0.2s;
-}
-
-.menu-btn:hover {
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.avatar-placeholder {
-  background: var(--color-gray-500);
-  color: white;
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Filters Bar */
-.filters-bar {
-  position: sticky;
-  top: 80px;
-  z-index: 99;
-  background: white;
-  border-bottom: 1px solid var(--color-gray-100);
-  padding: 16px 0;
-}
-
-.filters-content {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+  gap: 32px;
   overflow-x: auto;
-  scrollbar-width: none;
+  padding: 8px 0;
+  scrollbar-width: none; /* Firefox */
 }
 
-.filter-chip {
+.categories-wrapper::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+.category-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 4px 0 12px;
+  cursor: pointer;
+  color: var(--color-gray-500);
+  transition: all 0.2s;
+  white-space: nowrap;
+  min-width: fit-content;
+}
+
+.category-item:hover {
+  color: var(--color-gray-900);
+  border-bottom-color: var(--color-gray-300);
+}
+
+.category-item.active {
+  color: var(--color-gray-900);
+  border-bottom-color: var(--color-gray-900);
+}
+
+.category-icon {
+  font-size: 24px;
+}
+
+.category-label {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Header Actions */
+.filters-trigger-btn {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 16px;
-  background: white;
+  padding: 10px 16px;
   border: 1px solid var(--color-gray-300);
-  border-radius: var(--radius-full);
-  font-size: 14px;
-  font-weight: 500;
+  border-radius: var(--radius-lg);
+  background: white;
   color: var(--color-gray-700);
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
-  white-space: nowrap;
   transition: all 0.2s;
 }
 
-.filter-chip:hover {
+.filters-trigger-btn:hover {
   border-color: var(--color-gray-900);
+  background: var(--color-gray-50);
 }
 
-.filter-chip.active {
-  background: var(--color-gray-100);
-  border-color: var(--color-gray-900);
-  border-width: 2px;
-  padding: 7px 15px;
-  /* adjust for border width */
-}
-
-.vertical-divider {
-  display: none; /* Hide if not used */
-}
-
-.active-filters-list {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  margin-left: 16px;
-}
-
-.chip {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  background: black;
+.filter-count {
+  background: var(--color-gray-900);
   color: white;
-  border-radius: 9999px;
-  font-size: 13px;
-  font-weight: 500;
-  border: none;
-  cursor: pointer;
+  font-size: 10px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.remove-x {
-  font-weight: bold;
-  font-size: 16px;
-  line-height: 1;
-  opacity: 0.7;
-}
 
-.chip:hover .remove-x {
-  opacity: 1;
-}
 
 /* Main Content */
 .main-content {
@@ -447,7 +339,6 @@ function formatDateRange() {
 
 .listing-card {
   cursor: pointer;
-  group: 1;
 }
 
 .listing-image-wrap {
