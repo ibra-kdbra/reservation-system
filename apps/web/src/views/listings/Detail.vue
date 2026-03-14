@@ -46,7 +46,7 @@
           <ListingAmenities :amenities="listing.amenities" />
 
           <!-- Reviews -->
-          <ListingReviews v-if="listing.reviewCount && listing.reviewCount > 0" :reviews="reviews" :rating="listing.averageRating"
+          <ListingReviews v-if="listing.reviewCount && listing.reviewCount > 0" :reviews="reviews" :rating="listing.averageRating || 0"
             :review-count="listing.reviewCount" />
 
           <!-- Map -->
@@ -149,7 +149,7 @@ async function toggleSave() {
     } else if (listing.value) {
       const { data } = await api.addFavorite(listing.value.id)
       isSaved.value = true
-      savedId.value = data.data.favoriteId || data.id // Fallback for backward compatibility if needed
+      savedId.value = data.data.favoriteId || data.data.id // Fallback for backward compatibility if needed
       toast.success('Added to wishlist ❤️')
     }
   } catch {
