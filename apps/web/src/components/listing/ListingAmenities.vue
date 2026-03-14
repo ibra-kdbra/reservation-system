@@ -7,22 +7,22 @@
                 <span>{{ la.amenity?.name || la.name }}</span>
             </div>
         </div>
-        <button v-if="amenities.length > limit" class="show-all-btn" @click="isOpen = true">
+        <button v-if="amenities.length > limit" class="show-all-btn" @click="isOpen = true" aria-label="Show all amenities">
             Show all {{ amenities.length }} amenities
         </button>
 
         <!-- Modal -->
         <Teleport to="body">
             <div v-if="isOpen" class="modal-overlay" @click="isOpen = false">
-                <div class="modal-content" @click.stop>
-                    <button class="close-btn" @click="isOpen = false">
+                <div class="modal-content" ref="modalRef" @click.stop role="dialog" aria-modal="true" aria-labelledby="amenities-title">
+                    <button class="close-btn" @click="isOpen = false" aria-label="Close amenities modal">
                         <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2"
-                            fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <line x1="18" y1="6" x2="6" y2="18"></line>
                             <line x1="6" y1="6" x2="18" y2="18"></line>
                         </svg>
                     </button>
-                    <h3 class="modal-title">What this place offers</h3>
+                    <h3 class="modal-title" id="amenities-title">What this place offers</h3>
                     <div class="modal-scroll">
                         <div class="modal-amenities-list">
                             <div v-for="la in amenities" :key="la.id" class="modal-amenity-item">
@@ -38,7 +38,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
+import { useFocusTrap } from '@/composables/useFocusTrap'
 
 const props = defineProps<{
     amenities: any[]
@@ -46,7 +47,23 @@ const props = defineProps<{
 }>()
 
 const isOpen = ref(false)
+const modalRef = ref<HTMLElement | null>(null)
 const limit = props.limit || 10
+
+useFocusTrap(modalRef, isOpen)
+
+function handleKeydown(e: KeyboardEvent) {
+    if (!isOpen.value) return
+    if (e.key === 'Escape') isOpen.value = false
+}
+
+onMounted(() => {
+    window.addEventListener('keydown', handleKeydown)
+})
+
+onUnmounted(() => {
+    window.removeEventListener('keydown', handleKeydown)
+})
 
 const displayedAmenities = computed(() => {
     return props.amenities.slice(0, limit)
