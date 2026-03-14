@@ -21,8 +21,8 @@ export const useAuthStore = defineStore('auth', () => {
     isLoading.value = true
     try {
       const { data } = await api.login({ email, password })
-      user.value = data.user
-      return data
+      user.value = data.data.user
+      return data.data
     } catch (error) {
       throw error
     } finally {
@@ -39,8 +39,8 @@ export const useAuthStore = defineStore('auth', () => {
     isLoading.value = true
     try {
       const { data } = await api.register(userData)
-      user.value = data.user
-      return data
+      user.value = data.data.user
+      return data.data
     } catch (error) {
       throw error
     } finally {
@@ -61,7 +61,7 @@ export const useAuthStore = defineStore('auth', () => {
   async function fetchCurrentUser() {
     try {
       const { data } = await api.getCurrentUser()
-      user.value = data
+      user.value = data.data
     } catch {
       // Not authenticated — this is expected for guests
       user.value = null
