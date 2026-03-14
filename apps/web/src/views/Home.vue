@@ -170,7 +170,7 @@
         <div v-for="listing in filteredListings" :key="listing.id" class="listing-card" data-reveal-child
           @click="goToListing(listing.id)">
           <div class="listing-image-wrap">
-            <img :src="listing.coverImage" :alt="listing.title" class="listing-image" loading="lazy" />
+            <img :src="listing.images?.[0] || ''" :alt="listing.title" class="listing-image" loading="lazy" />
             <span class="listing-type badge badge-primary">{{ formatType(listing.propertyType) }}</span>
             <span v-if="listing.instantBook" class="instant-badge">⚡ Instant</span>
           </div>
@@ -262,6 +262,7 @@ import { api } from '@/api/client'
 import { useTimeTheme } from '@/composables/useTimeTheme'
 import { useScrollReveal } from '@/composables/useScrollReveal'
 import MagneticButton from '@/components/ui/MagneticButton.vue'
+import type { Listing } from '@/types'
 
 const router = useRouter()
 const { theme } = useTimeTheme()
@@ -271,7 +272,7 @@ const searchQuery = ref('')
 const checkIn = ref('')
 const checkOut = ref('')
 const guests = ref(1)
-const listings = ref<any[]>([])
+const listings = ref<Listing[]>([])
 const loading = ref(true)
 const activeCategory = ref('ALL')
 
@@ -325,7 +326,7 @@ async function fetchListings() {
   loading.value = true
   try {
     const { data } = await api.searchListings({ limit: 12 })
-    listings.value = data.listings || data || []
+    listings.value = data.listings || []
   } catch (error) {
     console.error('Failed to fetch listings:', error)
   } finally {
