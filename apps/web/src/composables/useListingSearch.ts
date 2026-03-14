@@ -1,6 +1,17 @@
 import { ref, reactive, watch, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { api } from '../api/client'
+import { api } from '@/api/client'
+
+export interface SearchFiltersData {
+    city: string
+    checkIn: string
+    checkOut: string
+    guests: number
+    propertyType: string
+    minPrice: number | null
+    maxPrice: number | null
+    amenities: string[]
+}
 
 export function useListingSearch() {
     const route = useRoute()
@@ -10,15 +21,19 @@ export function useListingSearch() {
     const listings = ref<any[]>([])
 
     // Filters state
-    const filters = reactive({
+    const filters = reactive<SearchFiltersData>({
         city: (route.query.city as string) || '',
         checkIn: (route.query.checkIn as string) || '',
         checkOut: (route.query.checkOut as string) || '',
         guests: Number(route.query.guests) || 1,
         propertyType: (route.query.propertyType as string) || '',
-        minPrice: Number(route.query.minPrice) || null,
-        maxPrice: Number(route.query.maxPrice) || null,
-        amenities: (route.query.amenities as string[]) || [], // Array of strings
+        minPrice: route.query.minPrice ? Number(route.query.minPrice) : null,
+        maxPrice: route.query.maxPrice ? Number(route.query.maxPrice) : null,
+        amenities: Array.isArray(route.query.amenities) 
+            ? (route.query.amenities as string[]) 
+            : route.query.amenities 
+                ? [route.query.amenities as string] 
+                : [],
     })
 
     // Fetch listings from API

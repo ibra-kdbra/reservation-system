@@ -1,9 +1,11 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { api } from '../api/client'
+import { api } from '@/api/client'
+import { useCurrencyStore } from '@/stores/currency'
 
 export function useBooking(listingId: string, pricePerNight: number) {
     const router = useRouter()
+    const currencyStore = useCurrencyStore()
     const step = ref(1)
     const loading = ref(false)
     const error = ref('')
@@ -30,6 +32,16 @@ export function useBooking(listingId: string, pricePerNight: number) {
 
     const totalPrice = computed(() => {
         return nights.value * pricePerNight
+    })
+
+    const formattedCheckIn = computed(() => {
+        if (!bookingData.value.checkIn) return ''
+        return new Date(bookingData.value.checkIn).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+    })
+
+    const formattedCheckOut = computed(() => {
+        if (!bookingData.value.checkOut) return ''
+        return new Date(bookingData.value.checkOut).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
     })
 
     async function submitBooking() {
@@ -65,6 +77,9 @@ export function useBooking(listingId: string, pricePerNight: number) {
         bookingData,
         nights,
         totalPrice,
-        submitBooking
+        formattedCheckIn,
+        formattedCheckOut,
+        submitBooking,
+        formatPrice: currencyStore.format
     }
 }
