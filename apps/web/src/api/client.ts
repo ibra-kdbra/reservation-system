@@ -1,4 +1,8 @@
-import axios, { type AxiosInstance } from 'axios'
+import axios, { type AxiosInstance, type AxiosResponse } from 'axios'
+import type { 
+    User, Listing, Booking, Review, 
+    PaginatedResponse, ApiResponse 
+} from '@/types'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1'
 
@@ -27,49 +31,49 @@ class ApiClient {
   }
 
   // Auth endpoints
-  async register(data: { email: string; password: string; firstName?: string; lastName?: string }) {
+  async register(data: { email: string; password: string; firstName?: string; lastName?: string }): Promise<AxiosResponse<ApiResponse<{ user: User }>>> {
     return this.client.post('/auth/register', data)
   }
 
-  async login(data: { email: string; password: string }) {
+  async login(data: { email: string; password: string }): Promise<AxiosResponse<ApiResponse<{ user: User }>>> {
     return this.client.post('/auth/login', data)
   }
 
-  async logout() {
+  async logout(): Promise<AxiosResponse<ApiResponse<null>>> {
     return this.client.post('/auth/logout')
   }
 
-  async getCurrentUser() {
+  async getCurrentUser(): Promise<AxiosResponse<ApiResponse<User>>> {
     return this.client.get('/auth/me')
   }
 
   // User endpoints
-  async getUserProfile() {
+  async getUserProfile(): Promise<AxiosResponse<User>> {
     return this.client.get('/users/me')
   }
 
-  async updateProfile(data: any) {
+  async updateProfile(data: Partial<User>): Promise<AxiosResponse<User>> {
     return this.client.put('/users/me', data)
   }
 
-  async getUserStats() {
+  async getUserStats(): Promise<AxiosResponse<any>> { // Stats shape varies, keeping any for now or define a UserStats interface
     return this.client.get('/users/me/stats')
   }
 
   // Listing endpoints
-  async searchListings(params: any) {
+  async searchListings(params: Record<string, any>): Promise<AxiosResponse<PaginatedResponse<Listing>>> {
     return this.client.get('/listings/search', { params })
   }
 
-  async getListingById(id: string) {
+  async getListingById(id: string): Promise<AxiosResponse<Listing>> {
     return this.client.get(`/listings/${id}`)
   }
 
-  async createListing(data: any) {
+  async createListing(data: Partial<Listing>): Promise<AxiosResponse<Listing>> {
     return this.client.post('/listings', data)
   }
 
-  async updateListing(id: string, data: any) {
+  async updateListing(id: string, data: Partial<Listing>): Promise<AxiosResponse<Listing>> {
     return this.client.put(`/listings/${id}`, data)
   }
 
@@ -77,28 +81,28 @@ class ApiClient {
     return this.client.delete(`/listings/${id}`)
   }
 
-  async getMyListings() {
+  async getMyListings(): Promise<AxiosResponse<Listing[]>> {
     return this.client.get('/listings/my-listings')
   }
 
-  async publishListing(id: string) {
+  async publishListing(id: string): Promise<AxiosResponse<Listing>> {
     return this.client.post(`/listings/${id}/publish`)
   }
 
   // Booking endpoints
-  async createBooking(data: any) {
+  async createBooking(data: Partial<Booking>): Promise<AxiosResponse<Booking>> {
     return this.client.post('/bookings', data)
   }
 
-  async getMyBookings() {
+  async getMyBookings(): Promise<AxiosResponse<Booking[]>> {
     return this.client.get('/bookings/my-bookings')
   }
 
-  async getHostBookings() {
+  async getHostBookings(): Promise<AxiosResponse<Booking[]>> {
     return this.client.get('/bookings/host-bookings')
   }
 
-  async getBookingById(id: string) {
+  async getBookingById(id: string): Promise<AxiosResponse<Booking>> {
     return this.client.get(`/bookings/${id}`)
   }
 
@@ -111,28 +115,28 @@ class ApiClient {
   }
 
   // Favorites endpoints
-  async getFavorites() {
+  async getFavorites(): Promise<AxiosResponse<any[]>> { // Favorites return array of objects with id and listing
     return this.client.get('/favorites')
   }
 
-  async addFavorite(listingId: string) {
+  async addFavorite(listingId: string): Promise<AxiosResponse<ApiResponse<any>>> {
     return this.client.post('/favorites', { listingId })
   }
 
-  async removeFavorite(favoriteId: string) {
+  async removeFavorite(favoriteId: string): Promise<AxiosResponse<ApiResponse<null>>> {
     return this.client.delete(`/favorites/${favoriteId}`)
   }
 
-  async isFavorite(listingId: string) {
+  async isFavorite(listingId: string): Promise<AxiosResponse<ApiResponse<{ isFavorite: boolean; favoriteId?: string }>>> {
     return this.client.get(`/favorites/check/${listingId}`)
   }
 
   // Reviews endpoints
-  async getListingReviews(listingId: string) {
+  async getListingReviews(listingId: string): Promise<AxiosResponse<Review[]>> {
     return this.client.get(`/listings/${listingId}/reviews`)
   }
 
-  async createReview(data: any) {
+  async createReview(data: Partial<Review>): Promise<AxiosResponse<Review>> {
     return this.client.post('/reviews', data)
   }
 
