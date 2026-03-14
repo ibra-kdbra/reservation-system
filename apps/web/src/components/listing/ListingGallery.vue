@@ -2,23 +2,23 @@
     <section class="gallery-container">
         <div class="gallery-grid">
             <!-- Main Image (Left) -->
-            <div class="gallery-main" @click="$emit('open', 0)">
+            <button class="gallery-main" @click="$emit('open', 0)" aria-label="View main photo full-screen">
                 <img :src="images[0] || coverImage" :alt="title" class="gallery-image" />
                 <div class="gallery-overlay"></div>
-            </div>
+            </button>
 
             <!-- Side Images (Right) -->
             <div class="gallery-side">
-                <div v-for="(img, index) in displayImages" :key="index" class="gallery-item"
-                    @click="$emit('open', index + 1)">
+                <button v-for="(img, index) in displayImages" :key="index" class="gallery-item"
+                    @click="$emit('open', index + 1)" :aria-label="`View photo ${index + 2} full-screen`">
                     <img :src="img" :alt="`${title} photo ${index + 2}`" class="gallery-image" />
                     <div class="gallery-overlay"></div>
-                </div>
+                </button>
             </div>
         </div>
 
-        <button class="show-all-btn" @click="$emit('open', 0)">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="margin-right: 8px;">
+        <button class="show-all-btn" @click="$emit('open', 0)" aria-label="Show all photos">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="margin-right: 8px;" aria-hidden="true">
                 <path
                     d="M3 5a2 2 0 012-2h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5zm16 0H5v14h14V5zm-8 4a2 2 0 110 4 2 2 0 010-4zm0 2a2 2 0 100 4 2 2 0 000-4z" />
             </svg>
@@ -60,41 +60,16 @@ const displayImages = computed(() => {
     height: 400px;
 }
 
-.gallery-main {
-    position: relative;
-    height: 100%;
-    cursor: pointer;
-    overflow: hidden;
-}
-
-.gallery-side {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
-    gap: var(--spacing-xs);
-    height: 100%;
-}
-
+.gallery-main,
 .gallery-item {
     position: relative;
     cursor: pointer;
     overflow: hidden;
-}
-
-.gallery-image {
+    padding: 0;
+    border: none;
+    background: none;
+    display: block;
     width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform var(--transition-slow);
-}
-
-.gallery-overlay {
-    position: absolute;
-    inset: 0;
-    background-color: rgba(0, 0, 0, 0.05);
-    /* subtle dim */
-    opacity: 0;
-    transition: opacity var(--transition-fast);
 }
 
 .gallery-main:hover .gallery-image,
