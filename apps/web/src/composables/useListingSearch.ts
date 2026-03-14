@@ -1,6 +1,7 @@
 import { ref, reactive, watch, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { api } from '@/api/client'
+import type { Listing } from '@/types'
 
 export interface SearchFiltersData {
     city: string
@@ -18,7 +19,7 @@ export function useListingSearch() {
     const router = useRouter()
 
     const loading = ref(true)
-    const listings = ref<any[]>([])
+    const listings = ref<Listing[]>([])
 
     // Filters state
     const filters = reactive<SearchFiltersData>({
