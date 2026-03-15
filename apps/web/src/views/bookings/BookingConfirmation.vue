@@ -74,8 +74,8 @@ onMounted(async () => {
         return
     }
     try {
-        const { data } = await api.getBookingById(bookingId)
-        booking.value = data
+        const { data: wrapper } = await api.getBookingById(bookingId)
+        booking.value = wrapper.data
     } catch {
         // Fallback — still show a success message but without details
         booking.value = null
