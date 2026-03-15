@@ -8,7 +8,7 @@
 
                 <section class="info-section">
                     <div class="icon-header">
-                        <span class="icon">🛡️</span>
+                        <ShieldCheck class="w-6 h-6 vibrant-icon icon-vibrant-success" />
                         <h2>Verified Listings</h2>
                     </div>
                     <p>
@@ -20,7 +20,7 @@
 
                 <section class="info-section">
                     <div class="icon-header">
-                        <span class="icon">🔒</span>
+                        <Lock class="w-6 h-6 vibrant-icon icon-vibrant-error" />
                         <h2>Secure Payments</h2>
                     </div>
                     <p>
@@ -32,7 +32,7 @@
 
                 <section class="info-section">
                     <div class="icon-header">
-                        <span class="icon">📞</span>
+                        <Phone class="w-6 h-6 vibrant-icon icon-vibrant-calendar" />
                         <h2>24/7 Support</h2>
                     </div>
                     <p>
@@ -45,6 +45,10 @@
         </div>
     </div>
 </template>
+
+<script setup lang="ts">
+import { ShieldCheck, Lock, Phone } from 'lucide-vue-next'
+</script>
 
 <style scoped>
 .static-page {
