@@ -3,7 +3,7 @@
         <h2 class="section-title">What this place offers</h2>
         <div class="amenities-grid">
             <div v-for="la in displayedAmenities" :key="la.id" class="amenity-item">
-                <span class="amenity-icon">{{ la.amenity?.icon || '✓' }}</span>
+                <component :is="getIcon(la.amenity?.icon || la.icon)" class="w-5 h-5 vibrant-icon icon-vibrant-home" />
                 <span>{{ la.amenity?.name || la.name }}</span>
             </div>
         </div>
@@ -16,17 +16,13 @@
             <div v-if="isOpen" class="modal-overlay" @click="isOpen = false">
                 <div class="modal-content" ref="modalRef" @click.stop role="dialog" aria-modal="true" aria-labelledby="amenities-title">
                     <button class="close-btn" @click="isOpen = false" aria-label="Close amenities modal">
-                        <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2"
-                            fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <line x1="18" y1="6" x2="6" y2="18"></line>
-                            <line x1="6" y1="6" x2="18" y2="18"></line>
-                        </svg>
+                        <X class="w-6 h-6" />
                     </button>
                     <h3 class="modal-title" id="amenities-title">What this place offers</h3>
                     <div class="modal-scroll">
                         <div class="modal-amenities-list">
                             <div v-for="la in amenities" :key="la.id" class="modal-amenity-item">
-                                <span class="amenity-icon large">{{ la.amenity?.icon || '✓' }}</span>
+                                <component :is="getIcon(la.amenity?.icon || la.icon)" class="w-6 h-6 vibrant-icon icon-vibrant-home" />
                                 <span class="amenity-name">{{ la.amenity?.name || la.name }}</span>
                             </div>
                         </div>
@@ -39,12 +35,74 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
+import {
+    Wifi,
+    Snowflake,
+    UtensilsCrossed,
+    Waves,
+    Tv,
+    Dumbbell,
+    ParkingCircle,
+    Thermometer,
+    Monitor,
+    Camera,
+    Bandage,
+    Flame,
+    Bell,
+    Leaf,
+    CupSoda,
+    Landmark,
+    Sprout,
+    Sunset,
+    User,
+    Sparkles,
+    Bike,
+    Car,
+    Building,
+    Mountain,
+    Check,
+    X
+} from 'lucide-vue-next'
 import { useFocusTrap } from '@/composables/useFocusTrap'
 
 const props = defineProps<{
     amenities: any[]
     limit?: number
 }>()
+
+const iconMap: Record<string, any> = {
+    '📶': Wifi,
+    '❄️': Snowflake,
+    '🍳': UtensilsCrossed,
+    '🧺': Waves, // Close enough to Washer/Laundry
+    '📺': Tv,
+    '🏊': Waves,
+    '🏋️': Dumbbell,
+    '🅿️': ParkingCircle,
+    '♨️': Thermometer,
+    '💻': Monitor,
+    '📷': Camera,
+    '🩹': Bandage,
+    '🧯': Flame,
+    '🔔': Bell,
+    '🎋': Leaf,
+    '🍵': CupSoda,
+    '⛩️': Landmark,
+    '🌾': Sprout,
+    '🌇': Sunset,
+    '🧘': User,
+    '💆': Sparkles,
+    '🚲': Bike,
+    '🚐': Car,
+    '🏙️': Building,
+    '🌿': Leaf,
+    '🏞️': Mountain,
+    '🛎️': Bell
+}
+
+function getIcon(iconStr: string) {
+    return iconMap[iconStr] || Check
+}
 
 const isOpen = ref(false)
 const modalRef = ref<HTMLElement | null>(null)
