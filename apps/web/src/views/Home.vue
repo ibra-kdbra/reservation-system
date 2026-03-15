@@ -325,8 +325,8 @@ onMounted(async () => {
 async function fetchListings() {
   loading.value = true
   try {
-    const { data } = await api.searchListings({ limit: 12 })
-    listings.value = data.listings || []
+    const { data: wrapper } = await api.searchListings({ limit: 12 })
+    listings.value = wrapper.data.listings || []
   } catch (error) {
     console.error('Failed to fetch listings:', error)
   } finally {

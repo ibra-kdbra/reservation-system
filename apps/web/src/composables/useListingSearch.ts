@@ -55,8 +55,8 @@ export function useListingSearch() {
             if (filters.maxPrice) params.maxPrice = filters.maxPrice
             if (filters.amenities && filters.amenities.length > 0) params.amenities = filters.amenities
 
-            const { data } = await api.searchListings(params)
-            listings.value = data.listings || []
+            const { data: wrapper } = await api.searchListings(params)
+            listings.value = wrapper.data.listings || []
         } catch (err) {
             console.error('Search failed', err)
         } finally {

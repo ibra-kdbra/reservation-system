@@ -20,7 +20,7 @@ pnpm install
 
 ```bash
 # Start PostgreSQL, Redis, RabbitMQ, etc.
-docker-compose up -d
+docker compose up -d
 
 # Verify services are running
 docker ps
@@ -117,10 +117,10 @@ lsof -ti:5173 | xargs kill -9
 
 ```bash
 # Restart Docker services
-docker-compose restart postgres
+docker compose restart postgres
 
 # Check logs
-docker-compose logs postgres
+docker compose logs postgres
 ```
 
 ### Prisma Issues

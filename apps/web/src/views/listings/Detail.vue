@@ -112,13 +112,13 @@ const galleryIndex = ref(0)
 
 onMounted(async () => {
   try {
-    const { data } = await api.getListingById(route.params.id as string)
-    listing.value = data
-    reviews.value = data.reviews || []
+    const { data: wrapper } = await api.getListingById(route.params.id as string)
+    listing.value = wrapper.data
+    reviews.value = wrapper.data.reviews || []
 
     if (authStore.isAuthenticated) {
       try {
-        const { data: favData } = await api.isFavorite(data.id)
+        const { data: favData } = await api.isFavorite(wrapper.data.id)
         isSaved.value = favData.data.isFavorite
         savedId.value = favData.data.favoriteId || null
       } catch { /* ignore */ }
@@ -147,12 +147,13 @@ async function toggleSave() {
       savedId.value = null
       toast.success('Removed from wishlist')
     } else if (listing.value) {
-      const { data } = await api.addFavorite(listing.value.id)
+      const { data: wrapper } = await api.addFavorite(listing.value.id)
       isSaved.value = true
-      savedId.value = data.data.favoriteId || data.data.id // Fallback for backward compatibility if needed
+      savedId.value = wrapper.data.favoriteId || wrapper.data.id
       toast.success('Added to wishlist ❤️')
     }
-  } catch {
+  } catch (error) {
+    console.error('Wishlist update failed:', error)
     toast.error('Failed to update wishlist')
   }
 }

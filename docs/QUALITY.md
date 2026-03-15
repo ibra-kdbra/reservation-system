@@ -16,7 +16,7 @@ This document evaluates the project against the **ISO/IEC 25010:2023** product q
 
 | Sub-characteristic | Status | Notes |
 |---|---|---|
-| Time behaviour | ⚠️ | No API caching (Redis defined in docker-compose but unused) |
+| Time behaviour | ⚠️ | No API caching (Redis defined in docker compose but unused) |
 | Resource utilisation | ⚠️ | Images use `loading="lazy"` but no CDN or size optimisation |
 | Capacity | ⚠️ | No pagination beyond basic `limit/offset` |
 
@@ -81,7 +81,7 @@ See [SECURITY.md](./SECURITY.md) for full details.
 
 | Sub-characteristic | Status | Evidence |
 |---|---|---|
-| Adaptability | ✅ | `.env`-driven config, docker-compose |
+| Adaptability | ✅ | `.env`-driven config, docker compose |
 | Installability | ✅ | Full Docker setup |
 | Replaceability | ✅ | Prisma abstraction allows DB swap |
 

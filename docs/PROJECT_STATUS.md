@@ -85,7 +85,7 @@ pnpm install
 1. **Start Docker services**:
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 1. **Setup database**:
@@ -188,7 +188,7 @@ None currently - application is production-ready!
 ## 💡 Tips
 
 1. **Use Swagger UI** for API testing - it's interactive and shows all endpoints
-2. **Check Docker logs** if services don't start: `docker-compose logs`
+2. **Check Docker logs** if services don't start: `docker compose logs`
 3. **Reset database** if needed: `npx prisma migrate reset`
 4. **Hot reload** is enabled for both frontend and backend
 

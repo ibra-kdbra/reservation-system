@@ -3,13 +3,13 @@
         <div class="gallery-grid">
             <!-- Main Image (Left) -->
             <button class="gallery-main" @click="$emit('open', 0)" aria-label="View main photo full-screen">
-                <img :src="images[0] || coverImage" :alt="title" class="gallery-image" />
+                <img :src="(images && images[0]) || coverImage" :alt="title" class="gallery-image" />
                 <div class="gallery-overlay"></div>
             </button>
 
             <!-- Side Images (Right) -->
             <div class="gallery-side">
-                <button v-for="(img, index) in displayImages" :key="index" class="gallery-item"
+                <button v-for="(img, index) in (displayImages || [])" :key="index" class="gallery-item"
                     @click="$emit('open', index + 1)" :aria-label="`View photo ${index + 2} full-screen`">
                     <img :src="img" :alt="`${title} photo ${index + 2}`" class="gallery-image" />
                     <div class="gallery-overlay"></div>
@@ -41,7 +41,7 @@ defineEmits<{
 }>()
 
 const displayImages = computed(() => {
-    return (props.images || []).slice(1, 5)
+    return (props.images || []).slice(1, 3)
 })
 </script>
 
@@ -70,6 +70,23 @@ const displayImages = computed(() => {
     background: none;
     display: block;
     width: 100%;
+    height: 100%;
+}
+
+.gallery-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+    display: block;
+}
+
+.gallery-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.05);
+    opacity: 0;
+    transition: opacity var(--transition-fast);
 }
 
 .gallery-main:hover .gallery-image,
@@ -82,17 +99,24 @@ const displayImages = computed(() => {
     opacity: 1;
 }
 
+.gallery-side {
+    display: grid;
+    grid-template-rows: repeat(2, 1fr);
+    gap: var(--spacing-xs);
+    height: 100%;
+}
+
 /* Rounded corners for the grid */
 .gallery-main {
     border-top-left-radius: var(--radius-xl);
     border-bottom-left-radius: var(--radius-xl);
 }
 
-.gallery-item:nth-child(2) {
+.gallery-item:first-child {
     border-top-right-radius: var(--radius-xl);
 }
 
-.gallery-item:nth-child(4) {
+.gallery-item:last-child {
     border-bottom-right-radius: var(--radius-xl);
 }
 

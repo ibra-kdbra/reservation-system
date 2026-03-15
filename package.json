@@ -18,9 +18,9 @@
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,vue}\"",
     "clean": "turbo run clean && rm -rf node_modules",
-    "docker:dev": "docker-compose up -d",
-    "docker:down": "docker-compose down",
-    "docker:logs": "docker-compose logs -f",
+    "docker:dev": "docker compose up -d",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f",
     "changelog:add": "node scripts/changelog-generator.js add",
     "changelog:view": "node scripts/changelog-generator.js view",
     "changelog:summary": "node scripts/changelog-generator.js summary"

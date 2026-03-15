@@ -19,13 +19,13 @@ pnpm install
 
 ```bash
 # Start all services in detached mode
-docker-compose up -d
+docker compose up -d
 
 # View logs
-docker-compose logs -f
+docker compose logs -f
 
 # Check service health
-docker-compose ps
+docker compose ps
 ```
 
 ### 3. Access Services
@@ -169,7 +169,7 @@ psql postgresql://reservation_user:reservation_pass@localhost:5432/reservation_d
 
 ### Monitoring
 
-- **Logs**: `docker-compose logs -f <service-name>`
+- **Logs**: `docker compose logs -f <service-name>`
 - **Metrics**: <http://localhost:9090> (Prometheus)
 - **Dashboards**: <http://localhost:3001> (Grafana)
 - **Email Testing**: <http://localhost:8025> (Mailhog)
@@ -180,30 +180,30 @@ psql postgresql://reservation_user:reservation_pass@localhost:5432/reservation_d
 
 ```bash
 # Stop all services
-docker-compose down
+docker compose down
 
 # Remove volumes (WARNING: deletes data)
-docker-compose down -v
+docker compose down -v
 
 # Restart
-docker-compose up -d
+docker compose up -d
 ```
 
 ### Port conflicts
 
-Edit `docker-compose.yml` to change port mappings.
+Edit `docker compose.yml` to change port mappings.
 
 ### Database connection issues
 
 ```bash
 # Check if PostgreSQL is running
-docker-compose ps postgres
+docker compose ps postgres
 
 # View logs
-docker-compose logs postgres
+docker compose logs postgres
 
 # Test connection
-docker-compose exec postgres psql -U reservation_user -d reservation_db
+docker compose exec postgres psql -U reservation_user -d reservation_db
 ```
 
 ## Production Build
@@ -221,10 +221,10 @@ pnpm --filter @reservation/web build
 
 ```bash
 # Stop all services
-docker-compose down
+docker compose down
 
 # Restart a service
-docker-compose restart <service-name>
+docker compose restart <service-name>
 
 # View resource usage
 docker stats

@@ -21,7 +21,7 @@ cp .env.example .env
 # Edit .env with your values
 
 # 3. Start backing services (PostgreSQL, Redis, etc.)
-docker-compose up -d
+docker compose up -d
 
 # 4. Run database migrations and seed
 cd apps/api
