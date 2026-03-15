@@ -11,9 +11,9 @@ const mockFavorites = [
 describe('useWishlist', () => {
     beforeEach(() => {
         vi.clearAllMocks()
-        vi.mocked(api.getFavorites).mockResolvedValue({ data: mockFavorites } as any)
-        vi.mocked(api.addFavorite).mockResolvedValue({ data: {} } as any)
-        vi.mocked(api.removeFavorite).mockResolvedValue({ data: {} } as any)
+        vi.mocked(api.getFavorites).mockResolvedValue({ data: { data: mockFavorites } } as any)
+        vi.mocked(api.addFavorite).mockResolvedValue({ data: { data: { favoriteId: 'fav-new' } } } as any)
+        vi.mocked(api.removeFavorite).mockResolvedValue({ data: { data: null } } as any)
     })
 
     it('starts with empty favorites and loading true', () => {
@@ -51,7 +51,7 @@ describe('useWishlist', () => {
     })
 
     it('toggleWishlist calls addFavorite for unlisted listing', async () => {
-        vi.mocked(api.getFavorites).mockResolvedValueOnce({ data: [] } as any)
+        vi.mocked(api.getFavorites).mockResolvedValueOnce({ data: { data: [] } } as any)
         const { fetchWishlist, toggleWishlist } = useWishlist()
         await fetchWishlist()
         await toggleWishlist('listing-new')
