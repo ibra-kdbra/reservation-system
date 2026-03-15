@@ -2,11 +2,11 @@
     <div class="space-y-6">
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
             <!-- Total Users -->
-            <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="bg-white overflow-hidden shadow rounded-lg stat-card">
                 <div class="p-5">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
-                            <span class="text-3xl">👥</span>
+                            <Users class="w-8 h-8 vibrant-icon icon-vibrant-users" />
                         </div>
                         <div class="ml-5 w-0 flex-1">
                             <dl>
@@ -21,11 +21,11 @@
             </div>
 
             <!-- Total Listings -->
-            <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="bg-white overflow-hidden shadow rounded-lg stat-card">
                 <div class="p-5">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
-                            <span class="text-3xl">🏠</span>
+                            <Home class="w-8 h-8 vibrant-icon icon-vibrant-home" />
                         </div>
                         <div class="ml-5 w-0 flex-1">
                             <dl>
@@ -40,11 +40,11 @@
             </div>
 
             <!-- Total Bookings -->
-            <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="bg-white overflow-hidden shadow rounded-lg stat-card">
                 <div class="p-5">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
-                            <span class="text-3xl">📅</span>
+                            <Calendar class="w-8 h-8 vibrant-icon icon-vibrant-calendar" />
                         </div>
                         <div class="ml-5 w-0 flex-1">
                             <dl>
@@ -59,11 +59,11 @@
             </div>
 
             <!-- Revenue -->
-            <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="bg-white overflow-hidden shadow rounded-lg stat-card">
                 <div class="p-5">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
-                            <span class="text-3xl">💰</span>
+                            <DollarSign class="w-8 h-8 vibrant-icon icon-vibrant-revenue" />
                         </div>
                         <div class="ml-5 w-0 flex-1">
                             <dl>
@@ -83,6 +83,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { Users, Home, Calendar, DollarSign } from 'lucide-vue-next'
 import { api } from '@/api/client'
 
 const stats = ref({
@@ -94,8 +95,8 @@ const stats = ref({
 
 onMounted(async () => {
     try {
-        const res = await api.getAdminStats()
-        stats.value = res.data
+        const { data: wrapper } = await api.getAdminStats()
+        stats.value = wrapper.data
     } catch (error) {
         console.error('Failed to load admin stats', error)
     }
