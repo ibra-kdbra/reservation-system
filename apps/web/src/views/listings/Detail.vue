@@ -150,7 +150,7 @@ async function toggleSave() {
       const { data: wrapper } = await api.addFavorite(listing.value.id)
       isSaved.value = true
       savedId.value = wrapper.data.favoriteId || wrapper.data.id
-      toast.success('Added to wishlist ❤️')
+      toast.success('Added to wishlist')
     }
   } catch (error) {
     console.error('Wishlist update failed:', error)
