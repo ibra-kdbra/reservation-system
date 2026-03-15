@@ -7,8 +7,9 @@ import {
   IsOptional,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { RegisterPayload, LoginPayload } from '@nest-asia/types';
 
-export class RegisterDto {
+export class RegisterDto implements RegisterPayload {
   @ApiProperty({
     description: 'User email address',
     example: 'user@example.com',
@@ -17,7 +18,8 @@ export class RegisterDto {
   email: string;
 
   @ApiProperty({
-    description: 'User password (min 8 chars, 1 uppercase, 1 lowercase, 1 number/special)',
+    description:
+      'User password (min 8 chars, 1 uppercase, 1 lowercase, 1 number/special)',
     example: 'StrongPassword123!',
     minLength: 8,
     maxLength: 100,
@@ -26,7 +28,8 @@ export class RegisterDto {
   @MinLength(8)
   @MaxLength(100)
   @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
-    message: 'Password must contain uppercase, lowercase, and number/special character',
+    message:
+      'Password must contain uppercase, lowercase, and number/special character',
   })
   password: string;
 
@@ -45,7 +48,7 @@ export class RegisterDto {
   lastName?: string;
 }
 
-export class LoginDto {
+export class LoginDto implements LoginPayload {
   @ApiProperty({
     description: 'User email',
     example: 'user@example.com',
@@ -73,7 +76,8 @@ export class ChangePasswordDto {
   currentPassword: string;
 
   @ApiProperty({
-    description: 'New password (min 8 chars, 1 uppercase, 1 lowercase, 1 number/special)',
+    description:
+      'New password (min 8 chars, 1 uppercase, 1 lowercase, 1 number/special)',
     minLength: 8,
     maxLength: 100,
   })
@@ -81,7 +85,8 @@ export class ChangePasswordDto {
   @MinLength(8)
   @MaxLength(100)
   @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
-    message: 'Password must contain uppercase, lowercase, and number/special character',
+    message:
+      'Password must contain uppercase, lowercase, and number/special character',
   })
   newPassword: string;
 }
@@ -109,7 +114,8 @@ export class ResetPasswordDto {
   @MinLength(8)
   @MaxLength(100)
   @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
-    message: 'Password must contain uppercase, lowercase, and number/special character',
+    message:
+      'Password must contain uppercase, lowercase, and number/special character',
   })
   newPassword: string;
 }

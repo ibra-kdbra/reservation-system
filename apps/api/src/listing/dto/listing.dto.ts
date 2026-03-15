@@ -11,9 +11,14 @@ import {
   MaxLength,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { PropertyType, ListingStatus } from '@prisma/client';
+import {
+  PropertyType,
+  ListingStatus,
+  CreateListingPayload,
+  UpdateListingPayload,
+} from '@nest-asia/types';
 
-export class CreateListingDto {
+export class CreateListingDto implements CreateListingPayload {
   @ApiProperty({
     description: 'Title of the listing',
     example: 'Luxury Villa with Private Pool',
@@ -44,11 +49,17 @@ export class CreateListingDto {
   @IsEnum(PropertyType)
   propertyType: PropertyType;
 
-  @ApiProperty({ description: 'Country where property is located', example: 'Indonesia' })
+  @ApiProperty({
+    description: 'Country where property is located',
+    example: 'Indonesia',
+  })
   @IsString()
   country: string;
 
-  @ApiProperty({ description: 'City where property is located', example: 'Ubud' })
+  @ApiProperty({
+    description: 'City where property is located',
+    example: 'Ubud',
+  })
   @IsString()
   city: string;
 
@@ -57,7 +68,10 @@ export class CreateListingDto {
   @IsOptional()
   state?: string;
 
-  @ApiProperty({ description: 'Full address of the property', example: 'Jl. Raya Ubud No. 123' })
+  @ApiProperty({
+    description: 'Full address of the property',
+    example: 'Jl. Raya Ubud No. 123',
+  })
   @IsString()
   address: string;
 
@@ -66,19 +80,33 @@ export class CreateListingDto {
   @IsOptional()
   zipCode?: string;
 
-  @ApiProperty({ description: 'Latitude coordinate', example: -8.5069, minimum: -90, maximum: 90 })
+  @ApiProperty({
+    description: 'Latitude coordinate',
+    example: -8.5069,
+    minimum: -90,
+    maximum: 90,
+  })
   @IsNumber()
   @Min(-90)
   @Max(90)
   latitude: number;
 
-  @ApiProperty({ description: 'Longitude coordinate', example: 115.2625, minimum: -180, maximum: 180 })
+  @ApiProperty({
+    description: 'Longitude coordinate',
+    example: 115.2625,
+    minimum: -180,
+    maximum: 180,
+  })
   @IsNumber()
   @Min(-180)
   @Max(180)
   longitude: number;
 
-  @ApiProperty({ description: 'Maximum number of guests', example: 4, minimum: 1 })
+  @ApiProperty({
+    description: 'Maximum number of guests',
+    example: 4,
+    minimum: 1,
+  })
   @IsNumber()
   @Min(1)
   maxGuests: number;
@@ -98,35 +126,60 @@ export class CreateListingDto {
   @Min(0)
   bathrooms: number;
 
-  @ApiProperty({ description: 'Price per night in USD', example: 150, minimum: 0 })
+  @ApiProperty({
+    description: 'Price per night in USD',
+    example: 150,
+    minimum: 0,
+  })
   @IsNumber()
   @Min(0)
   pricePerNight: number;
 
-  @ApiPropertyOptional({ description: 'One-time cleaning fee', example: 50, minimum: 0 })
+  @ApiPropertyOptional({
+    description: 'One-time cleaning fee',
+    example: 50,
+    minimum: 0,
+  })
   @IsNumber()
   @IsOptional()
   @Min(0)
   cleaningFee?: number;
 
-  @ApiPropertyOptional({ description: 'Service fee percentage or fixed amount', example: 25, minimum: 0 })
+  @ApiPropertyOptional({
+    description: 'Service fee percentage or fixed amount',
+    example: 25,
+    minimum: 0,
+  })
   @IsNumber()
   @IsOptional()
   @Min(0)
   serviceFee?: number;
 
-  @ApiPropertyOptional({ description: 'Whether instant booking is enabled', example: true, default: false })
+  @ApiPropertyOptional({
+    description: 'Whether instant booking is enabled',
+    example: true,
+    default: false,
+  })
   @IsBoolean()
   @IsOptional()
   instantBook?: boolean;
 
-  @ApiPropertyOptional({ description: 'Minimum number of nights for a stay', example: 2, minimum: 1, default: 1 })
+  @ApiPropertyOptional({
+    description: 'Minimum number of nights for a stay',
+    example: 2,
+    minimum: 1,
+    default: 1,
+  })
   @IsNumber()
   @IsOptional()
   @Min(1)
   minNights?: number;
 
-  @ApiPropertyOptional({ description: 'Maximum number of nights for a stay', example: 30, minimum: 1 })
+  @ApiPropertyOptional({
+    description: 'Maximum number of nights for a stay',
+    example: 30,
+    minimum: 1,
+  })
   @IsNumber()
   @IsOptional()
   @Min(1)
@@ -134,7 +187,10 @@ export class CreateListingDto {
 
   @ApiProperty({
     description: 'Array of image URLs',
-    example: ['https://example.com/image1.jpg', 'https://example.com/image2.jpg'],
+    example: [
+      'https://example.com/image1.jpg',
+      'https://example.com/image2.jpg',
+    ],
     type: [String],
   })
   @IsArray()
@@ -160,8 +216,11 @@ export class CreateListingDto {
   amenityIds?: string[];
 }
 
-export class UpdateListingDto {
-  @ApiPropertyOptional({ description: 'Updated title', example: 'Modern Villa in Ubud' })
+export class UpdateListingDto implements UpdateListingPayload {
+  @ApiPropertyOptional({
+    description: 'Updated title',
+    example: 'Modern Villa in Ubud',
+  })
   @IsString()
   @IsOptional()
   @MinLength(10)
@@ -244,10 +303,15 @@ export class UpdateListingDto {
   @IsOptional()
   images?: string[];
 
-  @ApiPropertyOptional({ description: 'Updated cover image URL' })
-  @IsString()
+  @ApiPropertyOptional({
+    description: 'Updated array of amenity IDs',
+    example: ['wifi-id', 'pool-id'],
+    type: [String],
+  })
+  @IsArray()
+  @IsString({ each: true })
   @IsOptional()
-  coverImage?: string;
+  amenityIds?: string[];
 }
 
 export class SearchListingsDto {
@@ -256,24 +320,39 @@ export class SearchListingsDto {
   @IsOptional()
   city?: string;
 
-  @ApiPropertyOptional({ description: 'Filter by country', example: 'Indonesia' })
+  @ApiPropertyOptional({
+    description: 'Filter by country',
+    example: 'Indonesia',
+  })
   @IsString()
   @IsOptional()
   country?: string;
 
-  @ApiPropertyOptional({ description: 'Minimum number of guests', example: 2, minimum: 1 })
+  @ApiPropertyOptional({
+    description: 'Minimum number of guests',
+    example: 2,
+    minimum: 1,
+  })
   @IsNumber()
   @IsOptional()
   @Min(1)
   guests?: number;
 
-  @ApiPropertyOptional({ description: 'Minimum price per night', example: 50, minimum: 0 })
+  @ApiPropertyOptional({
+    description: 'Minimum price per night',
+    example: 50,
+    minimum: 0,
+  })
   @IsNumber()
   @IsOptional()
   @Min(0)
   minPrice?: number;
 
-  @ApiPropertyOptional({ description: 'Maximum price per night', example: 500, minimum: 0 })
+  @ApiPropertyOptional({
+    description: 'Maximum price per night',
+    example: 500,
+    minimum: 0,
+  })
   @IsNumber()
   @IsOptional()
   @Min(0)
@@ -307,24 +386,41 @@ export class SearchListingsDto {
   @IsOptional()
   instantBook?: boolean;
 
-  @ApiPropertyOptional({ description: 'Limit results per page', example: 20, default: 20, minimum: 1, maximum: 100 })
+  @ApiPropertyOptional({
+    description: 'Limit results per page',
+    example: 20,
+    default: 20,
+    minimum: 1,
+    maximum: 100,
+  })
   @IsNumber()
   @IsOptional()
   @Min(1)
   @Max(100)
   limit?: number;
 
-  @ApiPropertyOptional({ description: 'Check-in date (ISO string)', example: '2024-06-01' })
+  @ApiPropertyOptional({
+    description: 'Check-in date (ISO string)',
+    example: '2024-06-01',
+  })
   @IsString()
   @IsOptional()
   checkIn?: string;
 
-  @ApiPropertyOptional({ description: 'Check-out date (ISO string)', example: '2024-06-07' })
+  @ApiPropertyOptional({
+    description: 'Check-out date (ISO string)',
+    example: '2024-06-07',
+  })
   @IsString()
   @IsOptional()
   checkOut?: string;
 
-  @ApiPropertyOptional({ description: 'Offset for pagination', example: 0, default: 0, minimum: 0 })
+  @ApiPropertyOptional({
+    description: 'Offset for pagination',
+    example: 0,
+    default: 0,
+    minimum: 0,
+  })
   @IsNumber()
   @IsOptional()
   @Min(0)

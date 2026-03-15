@@ -6,8 +6,9 @@ import {
   Min,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { CreateBookingPayload } from '@nest-asia/types';
 
-export class CreateBookingDto {
+export class CreateBookingDto implements CreateBookingPayload {
   @ApiProperty({
     description: 'ID of the listing to book',
     example: 'listing-uuid',

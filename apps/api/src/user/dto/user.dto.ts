@@ -6,8 +6,9 @@ import {
   IsDateString,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { UpdateUserPayload, UpdateAvatarPayload } from '@nest-asia/types';
 
-export class UpdateUserDto {
+export class UpdateUserDto implements UpdateUserPayload {
   @ApiPropertyOptional({ description: 'First name', example: 'John' })
   @IsString()
   @IsOptional()
@@ -64,7 +65,7 @@ export class UpdateUserDto {
   timezone?: string;
 }
 
-export class UpdateAvatarDto {
+export class UpdateAvatarDto implements UpdateAvatarPayload {
   @ApiProperty({ description: 'URL to user avatar' })
   @IsString()
   avatar: string;
