@@ -86,8 +86,8 @@ const listings = ref<any[]>([])
 
 const loadListings = async () => {
     try {
-        const res = await api.getAdminListings()
-        listings.value = res.data
+        const { data: wrapper } = await api.getAdminListings()
+        listings.value = wrapper.data
     } catch (error) {
         console.error('Failed to load listings', error)
     }
