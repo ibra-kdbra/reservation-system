@@ -97,15 +97,15 @@ class ApiClient {
   }
 
   // User endpoints
-  async getUserProfile(): Promise<AxiosResponse<User>> {
+  async getUserProfile(): Promise<AxiosResponse<ApiResponse<User>>> {
     return this.client.get('/users/me')
   }
 
-  async updateProfile(data: Partial<User>): Promise<AxiosResponse<User>> {
+  async updateProfile(data: Partial<User>): Promise<AxiosResponse<ApiResponse<User>>> {
     return this.client.put('/users/me', data)
   }
 
-  async getUserStats(): Promise<AxiosResponse<any>> { // Stats shape varies, keeping any for now or define a UserStats interface
+  async getUserStats(): Promise<AxiosResponse<ApiResponse<any>>> {
     return this.client.get('/users/me/stats')
   }
 
@@ -126,7 +126,7 @@ class ApiClient {
     return this.client.put(`/listings/${id}`, data)
   }
 
-  async deleteListing(id: string) {
+  async deleteListing(id: string): Promise<AxiosResponse<ApiResponse<null>>> {
     return this.client.delete(`/listings/${id}`)
   }
 
@@ -143,28 +143,28 @@ class ApiClient {
     return this.client.post('/bookings', data)
   }
 
-  async getMyBookings(): Promise<AxiosResponse<Booking[]>> {
+  async getMyBookings(): Promise<AxiosResponse<ApiResponse<Booking[]>>> {
     return this.client.get('/bookings/my-bookings')
   }
 
-  async getHostBookings(): Promise<AxiosResponse<Booking[]>> {
+  async getHostBookings(): Promise<AxiosResponse<ApiResponse<Booking[]>>> {
     return this.client.get('/bookings/host-bookings')
   }
 
-  async getBookingById(id: string): Promise<AxiosResponse<Booking>> {
+  async getBookingById(id: string): Promise<AxiosResponse<ApiResponse<Booking>>> {
     return this.client.get(`/bookings/${id}`)
   }
 
-  async cancelBooking(id: string, reason: string) {
+  async cancelBooking(id: string, reason: string): Promise<AxiosResponse<ApiResponse<null>>> {
     return this.client.put(`/bookings/${id}/cancel`, { cancellationReason: reason })
   }
 
-  async confirmBooking(id: string) {
+  async confirmBooking(id: string): Promise<AxiosResponse<ApiResponse<null>>> {
     return this.client.put(`/bookings/${id}/confirm`)
   }
 
   // Favorites endpoints
-  async getFavorites(): Promise<AxiosResponse<any[]>> { // Favorites return array of objects with id and listing
+  async getFavorites(): Promise<AxiosResponse<ApiResponse<any[]>>> {
     return this.client.get('/favorites')
   }
 
@@ -181,40 +181,40 @@ class ApiClient {
   }
 
   // Reviews endpoints
-  async getListingReviews(listingId: string): Promise<AxiosResponse<Review[]>> {
+  async getListingReviews(listingId: string): Promise<AxiosResponse<ApiResponse<Review[]>>> {
     return this.client.get(`/listings/${listingId}/reviews`)
   }
 
-  async createReview(data: Partial<Review>): Promise<AxiosResponse<Review>> {
+  async createReview(data: Partial<Review>): Promise<AxiosResponse<ApiResponse<Review>>> {
     return this.client.post('/reviews', data)
   }
 
   // Admin endpoints
-  async getAdminStats() {
+  async getAdminStats(): Promise<AxiosResponse<ApiResponse<any>>> {
     return this.client.get('/admin/stats')
   }
 
-  async getAdminUsers() {
+  async getAdminUsers(): Promise<AxiosResponse<ApiResponse<any[]>>> {
     return this.client.get('/admin/users')
   }
 
-  async getAdminListings() {
+  async getAdminListings(): Promise<AxiosResponse<ApiResponse<any[]>>> {
     return this.client.get('/admin/listings')
   }
 
-  async banUser(id: string) {
+  async banUser(id: string): Promise<AxiosResponse<ApiResponse<null>>> {
     return this.client.patch(`/admin/users/${id}/ban`)
   }
 
-  async activateUser(id: string) {
+  async activateUser(id: string): Promise<AxiosResponse<ApiResponse<null>>> {
     return this.client.patch(`/admin/users/${id}/activate`)
   }
 
-  async approveListing(id: string) {
+  async approveListing(id: string): Promise<AxiosResponse<ApiResponse<null>>> {
     return this.client.patch(`/admin/listings/${id}/approve`)
   }
 
-  async rejectListing(id: string) {
+  async rejectListing(id: string): Promise<AxiosResponse<ApiResponse<null>>> {
     return this.client.patch(`/admin/listings/${id}/reject`)
   }
 }
