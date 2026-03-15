@@ -85,8 +85,8 @@ const users = ref<any[]>([])
 
 const loadUsers = async () => {
     try {
-        const res = await api.getAdminUsers()
-        users.value = res.data
+        const { data: wrapper } = await api.getAdminUsers()
+        users.value = wrapper.data
     } catch (error) {
         console.error('Failed to load users', error)
     }
