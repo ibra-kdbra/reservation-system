@@ -3,10 +3,42 @@ import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
+import { WinstonModule } from 'nest-winston';
+import * as winston from 'winston';
+import 'winston-daily-rotate-file';
 import { AppModule } from './app.module';
+import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const logger = WinstonModule.createLogger({
+    transports: [
+      new winston.transports.Console({
+        format: winston.format.combine(
+          winston.format.timestamp(),
+          winston.format.ms(),
+          winston.format.colorize(),
+          winston.format.printf((info) => {
+            const { timestamp, level, message, context } = info;
+            const ctx = typeof context === 'string' ? context : 'App';
+            return `[Nest] ${String(timestamp)} ${String(level)} [${String(ctx)}] ${String(message)}`;
+          }),
+        ),
+      }),
+      new winston.transports.DailyRotateFile({
+        filename: 'logs/application-%DATE%.log',
+        datePattern: 'YYYY-MM-DD',
+        zippedArchive: true,
+        maxSize: '20m',
+        maxFiles: '14d',
+        format: winston.format.combine(
+          winston.format.timestamp(),
+          winston.format.json(),
+        ),
+      }),
+    ],
+  });
+
+  const app = await NestFactory.create(AppModule, { logger });
   const config = app.get(ConfigService);
 
   // Cookie parser middleware
@@ -24,8 +56,14 @@ async function bootstrap() {
     }),
   );
 
+  // Global Interceptors
+  app.useGlobalInterceptors(new TransformInterceptor());
+
   // CORS
-  const frontendUrl = config.get<string>('FRONTEND_URL', 'http://localhost:5173');
+  const frontendUrl = config.get<string>(
+    'FRONTEND_URL',
+    'http://localhost:5173',
+  );
   app.enableCors({
     origin: [frontendUrl, 'http://localhost:5173', 'http://localhost:5174'],
     credentials: true, // Important for cookies
@@ -67,7 +105,12 @@ async function bootstrap() {
   const port = config.get<number>('PORT', 3000);
   await app.listen(port);
 
-  console.log(`🚀 Application is running on: http://localhost:${port}/${apiPrefix}`);
+  console.log(
+    `🚀 Application is running on: http://localhost:${port}/${apiPrefix}`,
+  );
   console.log(`📚 API Documentation: http://localhost:${port}/api/docs`);
 }
-bootstrap();
+bootstrap().catch((err) => {
+  console.error('Critical failure during boot:', err);
+  process.exit(1);
+});
