@@ -66,7 +66,7 @@
                                 <div class="amenities-grid">
                                     <label v-for="amenity in amenitiesList" :key="amenity.name" class="amenity-card" :class="{ selected: filters.amenities.includes(amenity.name) }">
                                         <input type="checkbox" :value="amenity.name" v-model="filters.amenities" class="hidden-checkbox">
-                                        <span class="amenity-icon">{{ amenity.icon }}</span>
+                                        <component :is="getIcon(amenity.icon)" class="w-6 h-6 vibrant-icon icon-vibrant-home" />
                                         <span class="amenity-text">{{ amenity.name }}</span>
                                     </label>
                                 </div>
@@ -86,6 +86,20 @@
 </template>
 
 <script setup lang="ts">
+import {
+    Wifi,
+    Snowflake,
+    UtensilsCrossed,
+    Waves,
+    Tv,
+    Dumbbell,
+    ParkingCircle,
+    Thermometer,
+    Monitor,
+    Leaf,
+    Mountain,
+    Check
+} from 'lucide-vue-next'
 import { reactive, watch, ref, onMounted, onUnmounted } from 'vue'
 import { useFocusTrap } from '@/composables/useFocusTrap'
 import type { SearchFiltersData } from '@/composables/useListingSearch'
@@ -98,6 +112,25 @@ const emit = defineEmits<{
     apply: [filters: SearchFiltersData],
     close: []
 }>()
+
+const iconMap: Record<string, any> = {
+    '📶': Wifi,
+    '❄️': Snowflake,
+    '🍳': UtensilsCrossed,
+    '🧺': Waves,
+    '📺': Tv,
+    '🏊': Waves,
+    '🏋️': Dumbbell,
+    '🅿️': ParkingCircle,
+    '♨️': Thermometer,
+    '💻': Monitor,
+    '🌿': Leaf,
+    '🏞️': Mountain
+}
+
+function getIcon(iconStr: string) {
+    return iconMap[iconStr] || Check
+}
 
 const amenitiesList = [
     { name: 'WiFi', icon: '📶' },
