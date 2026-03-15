@@ -1,0 +1,17 @@
+{
+  "name": "@nest-asia/types",
+  "version": "1.0.0",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/esm/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "private": true,
+  "scripts": {
+    "build": "rm -rf dist && tsc -p tsconfig.esm.json && tsc -p tsconfig.cjs.json"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3"
+  }
+}
