@@ -1,4 +1,5 @@
 import axios, { type AxiosInstance, type AxiosResponse } from 'axios'
+import axiosRetry from 'axios-retry'
 import type { 
     User, Listing, Booking, Review, 
     PaginatedResponse, ApiResponse 
@@ -26,6 +27,17 @@ class ApiClient {
         'Content-Type': 'application/json',
       },
       withCredentials: true,
+    })
+
+    // Configure retries for transient errors
+    axiosRetry(this.client, {
+      retries: 3,
+      retryDelay: axiosRetry.exponentialDelay,
+      retryCondition: (error) => {
+        // Retry on network errors or 5xx technical errors
+        return axiosRetry.isNetworkOrIdempotentRequestError(error) || 
+               (error.response?.status ? error.response.status >= 500 : false)
+      }
     })
 
     // Response interceptor - handle errors
@@ -98,19 +110,19 @@ class ApiClient {
   }
 
   // Listing endpoints
-  async searchListings(params: Record<string, any>): Promise<AxiosResponse<PaginatedResponse<Listing>>> {
+  async searchListings(params: Record<string, any>): Promise<AxiosResponse<ApiResponse<PaginatedResponse<Listing>>>> {
     return this.client.get('/listings/search', { params })
   }
 
-  async getListingById(id: string): Promise<AxiosResponse<Listing>> {
+  async getListingById(id: string): Promise<AxiosResponse<ApiResponse<Listing>>> {
     return this.client.get(`/listings/${id}`)
   }
 
-  async createListing(data: Partial<Listing>): Promise<AxiosResponse<Listing>> {
+  async createListing(data: Partial<Listing>): Promise<AxiosResponse<ApiResponse<Listing>>> {
     return this.client.post('/listings', data)
   }
 
-  async updateListing(id: string, data: Partial<Listing>): Promise<AxiosResponse<Listing>> {
+  async updateListing(id: string, data: Partial<Listing>): Promise<AxiosResponse<ApiResponse<Listing>>> {
     return this.client.put(`/listings/${id}`, data)
   }
 
@@ -118,16 +130,16 @@ class ApiClient {
     return this.client.delete(`/listings/${id}`)
   }
 
-  async getMyListings(): Promise<AxiosResponse<Listing[]>> {
+  async getMyListings(): Promise<AxiosResponse<ApiResponse<Listing[]>>> {
     return this.client.get('/listings/my-listings')
   }
 
-  async publishListing(id: string): Promise<AxiosResponse<Listing>> {
+  async publishListing(id: string): Promise<AxiosResponse<ApiResponse<Listing>>> {
     return this.client.post(`/listings/${id}/publish`)
   }
 
   // Booking endpoints
-  async createBooking(data: Partial<Booking>): Promise<AxiosResponse<Booking>> {
+  async createBooking(data: Partial<Booking>): Promise<AxiosResponse<ApiResponse<Booking>>> {
     return this.client.post('/bookings', data)
   }
 

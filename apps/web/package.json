@@ -12,8 +12,10 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
+    "@nest-asia/types": "workspace:*",
     "@vueuse/core": "^14.2.1",
     "axios": "^1.13.5",
+    "axios-retry": "^4.5.0",
     "leaflet": "^1.9.4",
     "lucide-vue-next": "^0.564.0",
     "pinia": "^3.0.4",
