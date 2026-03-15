@@ -270,7 +270,7 @@ async function confirmBooking() {
     if (errorMessage.value) {
         toast.error('Booking failed')
     } else {
-        toast.success('Booking confirmed! 🎉')
+        toast.success('Booking confirmed!')
         // Navigation is handled in composable, but we can verify/handle here if needed
     }
 }
@@ -281,8 +281,8 @@ onMounted(async () => {
         return
     }
     try {
-        const { data } = await api.getListingById(listingId)
-        listing.value = data
+        const { data: wrapper } = await api.getListingById(listingId)
+        listing.value = wrapper.data
     } catch {
         toast.error('Failed to load listing details')
         router.push({ name: 'home' })
