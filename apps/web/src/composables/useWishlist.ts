@@ -11,8 +11,8 @@ export function useWishlist() {
     async function fetchWishlist() {
         loading.value = true
         try {
-            const { data } = await api.getFavorites()
-            favorites.value = data
+            const { data: wrapper } = await api.getFavorites()
+            favorites.value = wrapper.data
         } catch (error) {
             console.error('Failed to fetch wishlist:', error)
         } finally {
