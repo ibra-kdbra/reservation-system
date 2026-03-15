@@ -5,7 +5,7 @@ export type TimePeriod = 'morning' | 'afternoon' | 'evening' | 'night'
 interface TimeTheme {
   period: TimePeriod
   greeting: string
-  emoji: string
+  icon: string
   accentColor: string
   accentColorLight: string
 }
@@ -14,28 +14,28 @@ const themes: Record<TimePeriod, TimeTheme> = {
   morning: {
     period: 'morning',
     greeting: 'Good morning',
-    emoji: '☀️',
+    icon: 'Sun',
     accentColor: '#f97316',
     accentColorLight: '#fff7ed',
   },
   afternoon: {
     period: 'afternoon',
     greeting: 'Good afternoon',
-    emoji: '🌤️',
+    icon: 'CloudSun',
     accentColor: '#3b82f6',
     accentColorLight: '#eff6ff',
   },
   evening: {
     period: 'evening',
     greeting: 'Good evening',
-    emoji: '🌅',
+    icon: 'Sunset',
     accentColor: '#a855f7',
     accentColorLight: '#faf5ff',
   },
   night: {
     period: 'night',
     greeting: 'Good evening',
-    emoji: '🌙',
+    icon: 'Moon',
     accentColor: '#6366f1',
     accentColorLight: '#eef2ff',
   },
