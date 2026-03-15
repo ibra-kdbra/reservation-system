@@ -4,7 +4,7 @@ import { useBooking } from '@/composables/useBooking'
 // useRouter and useCurrencyStore are mocked in setup.ts
 vi.mock('@/api/client', () => ({
     api: {
-        createBooking: vi.fn().mockResolvedValue({ data: { id: 'booking-123' } })
+        createBooking: vi.fn().mockResolvedValue({ data: { data: { id: 'booking-123' } } })
     }
 }))
 
