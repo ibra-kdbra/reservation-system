@@ -12,6 +12,7 @@ import { UserModule } from './user/user.module';
 import { ListingModule } from './listing/listing.module';
 import { BookingModule } from './booking/booking.module';
 import { AdminModule } from './admin/admin.module';
+import { FavoriteModule } from './favorite/favorite.module';
 
 @Module({
   imports: [
@@ -36,7 +37,7 @@ import { AdminModule } from './admin/admin.module';
     }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'client'),
-      exclude: ['/api/(.*)'],
+      exclude: ['/api/:path(.*)'],
     }),
     PrismaModule,
     AuthModule,
@@ -44,6 +45,7 @@ import { AdminModule } from './admin/admin.module';
     ListingModule,
     BookingModule,
     AdminModule,
+    FavoriteModule,
   ],
   controllers: [AppController],
   providers: [AppService],
