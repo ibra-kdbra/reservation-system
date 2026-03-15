@@ -30,7 +30,8 @@
             ref="dropdownRef" role="button" tabindex="0" aria-haspopup="true" :aria-expanded="showDropdown"
             aria-label="User menu">
             <img :src="authStore.user?.avatar || defaultAvatar" alt="" class="user-avatar" />
-            <span class="user-name hide-mobile">{{ authStore.user?.firstName || 'User' }}</span>
+            <component :is="iconMap[theme.icon]" class="w-5 h-5 vibrant-icon animate-icon-bounce" />
+            <span class="user-name hide-mobile">{{ theme.greeting }}, {{ authStore.user?.firstName || 'User' }}</span>
             <svg class="chevron" :class="{ open: showDropdown }" width="16" height="16" viewBox="0 0 16 16"
               fill="currentColor" aria-hidden="true">
               <path
@@ -41,25 +42,25 @@
             <Transition name="dropdown">
               <div v-if="showDropdown" class="dropdown-menu">
                 <router-link to="/profile" class="dropdown-item" @click="showDropdown = false">
-                  <span aria-hidden="true">👤</span> My Profile
+                  <User class="w-4 h-4 vibrant-icon icon-vibrant-users" /> My Profile
                 </router-link>
                 <router-link to="/bookings" class="dropdown-item" @click="showDropdown = false">
-                  <span aria-hidden="true">📅</span> My Bookings
+                  <Calendar class="w-4 h-4 vibrant-icon icon-vibrant-calendar" /> My Bookings
                 </router-link>
                 <router-link to="/wishlist" class="dropdown-item" @click="showDropdown = false">
-                  <span aria-hidden="true">❤️</span> Wishlist
+                  <Heart class="w-4 h-4 vibrant-icon icon-vibrant-error" /> Wishlist
                 </router-link>
                 <router-link v-if="authStore.user?.role === 'HOST'" to="/host/dashboard" class="dropdown-item"
                   @click="showDropdown = false">
-                  <span aria-hidden="true">📊</span> Host Dashboard
+                  <LayoutDashboard class="w-4 h-4 vibrant-icon icon-vibrant-home" /> Host Dashboard
                 </router-link>
                 <router-link v-if="authStore.user?.role === 'ADMIN'" to="/admin" class="dropdown-item"
                   @click="showDropdown = false">
-                  <span aria-hidden="true">🛡️</span> Admin Dashboard
+                  <ShieldAlert class="w-4 h-4 vibrant-icon icon-vibrant-revenue" /> Admin Dashboard
                 </router-link>
                 <div class="dropdown-divider"></div>
                 <button class="dropdown-item logout" @click="handleLogout">
-                  <span aria-hidden="true">🚪</span> Log Out
+                  <LogOut class="w-4 h-4" /> Log Out
                 </button>
               </div>
             </Transition>
@@ -108,8 +109,30 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
+import {
+  User,
+  Calendar,
+  Heart,
+  LayoutDashboard,
+  ShieldAlert,
+  LogOut,
+  Sun,
+  CloudSun,
+  Sunset,
+  Moon
+} from 'lucide-vue-next'
 import { useAuthStore } from '@/stores/auth'
+import { useTimeTheme } from '@/composables/useTimeTheme'
 import CurrencySelector from '@/components/ui/CurrencySelector.vue'
+
+const { theme } = useTimeTheme()
+
+const iconMap: Record<string, any> = {
+  Sun,
+  CloudSun,
+  Sunset,
+  Moon
+}
 
 const router = useRouter()
 const authStore = useAuthStore()
