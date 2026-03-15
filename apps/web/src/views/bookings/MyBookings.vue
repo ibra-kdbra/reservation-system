@@ -30,7 +30,10 @@
             <div class="booking-top">
               <div>
                 <h3>{{ booking.listing?.title || 'Listing' }}</h3>
-                <p class="text-sm text-gray-500">📍 {{ booking.listing?.city }}, {{ booking.listing?.country }}</p>
+                <p class="text-sm text-gray-500 flex items-center gap-1">
+                  <MapPin class="w-3.5 h-3.5 vibrant-icon icon-vibrant-users" />
+                  {{ booking.listing?.city }}, {{ booking.listing?.country }}
+                </p>
               </div>
               <span class="badge" :class="statusBadgeClass(booking.status)">
                 {{ booking.status }}
@@ -60,7 +63,9 @@
 
       <!-- Empty -->
       <div v-else class="empty-state">
-        <div class="empty-icon">📅</div>
+        <div class="empty-icon">
+          <Calendar class="w-16 h-16 mx-auto mb-4 vibrant-icon icon-vibrant-calendar" />
+        </div>
         <h3>No {{ activeTab.toLowerCase() }} bookings</h3>
         <p>{{ emptyMessage }}</p>
         <router-link to="/listings/search" class="btn btn-primary">Browse Listings</router-link>
@@ -71,6 +76,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
+import { MapPin, Calendar } from 'lucide-vue-next'
 import { api } from '@/api/client'
 
 const bookings = ref<any[]>([])
@@ -109,8 +115,8 @@ function getCount(tab: string) {
 
 onMounted(async () => {
   try {
-    const { data } = await api.getMyBookings()
-    bookings.value = data || []
+    const { data: wrapper } = await api.getMyBookings()
+    bookings.value = wrapper.data || []
   } catch (error) {
     console.error('Failed to fetch bookings:', error)
   } finally {
