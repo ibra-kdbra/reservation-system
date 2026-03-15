@@ -61,7 +61,10 @@
       </div>
 
       <div class="hero-content container">
-        <div class="hero-greeting slide-up">{{ theme.emoji }} {{ theme.greeting }}</div>
+        <div class="hero-greeting slide-up">
+          <component :is="iconMap[theme.icon]" class="w-4 h-4 vibrant-icon animate-icon-bounce mr-2" />
+          {{ theme.greeting }}
+        </div>
         <h1 class="hero-title slide-up delay-1">
           Explore the Heart of
           <span class="title-accent">Asia</span>
@@ -73,7 +76,7 @@
         <!-- Destination tags -->
         <div class="destination-tags slide-up delay-2">
           <span v-for="tag in destinationTags" :key="tag.name" class="dest-tag" @click="searchDestination(tag.name)">
-            <span class="dest-tag-emoji">{{ tag.emoji }}</span>
+            <component :is="getDestIcon(tag.icon)" class="w-4 h-4 vibrant-icon" />
             {{ tag.name }}
           </span>
         </div>
@@ -135,7 +138,7 @@
       <div class="category-scroll">
         <button v-for="cat in categories" :key="cat.type" class="category-chip"
           :class="{ active: activeCategory === cat.type }" @click="filterByCategory(cat.type)" data-reveal-child>
-          <span class="category-icon">{{ cat.icon }}</span>
+          <component :is="getCatIcon(cat.icon)" class="w-4 h-4 vibrant-icon" />
           <span>{{ cat.label }}</span>
         </button>
       </div>
@@ -172,7 +175,10 @@
           <div class="listing-image-wrap">
             <img :src="listing.images?.[0] || ''" :alt="listing.title" class="listing-image" loading="lazy" />
             <span class="listing-type badge badge-primary">{{ formatType(listing.propertyType) }}</span>
-            <span v-if="listing.instantBook" class="instant-badge">⚡ Instant</span>
+            <span v-if="listing.instantBook" class="instant-badge flex items-center gap-1">
+              <Zap class="w-3 h-3 fill-current" />
+              Instant
+            </span>
           </div>
           <div class="listing-body">
             <div class="listing-location">
@@ -196,7 +202,8 @@
                 <span class="per-night">/ night</span>
               </div>
               <div v-if="listing.averageRating" class="listing-rating">
-                ⭐ {{ listing.averageRating }}
+                <Star class="w-3.5 h-3.5 text-yellow-400 mr-1" />
+                {{ listing.averageRating }}
                 <span class="review-count">({{ listing.reviewCount }})</span>
               </div>
             </div>
@@ -212,7 +219,9 @@
         <div class="steps-grid">
           <div class="step-card" data-reveal-child>
             <div class="step-icon-wrap">
-              <div class="step-icon">🔍</div>
+              <div class="step-icon">
+                <Search class="w-8 h-8 vibrant-icon icon-vibrant-users" />
+              </div>
               <div class="step-number">1</div>
             </div>
             <h4>Search</h4>
@@ -220,7 +229,9 @@
           </div>
           <div class="step-card" data-reveal-child>
             <div class="step-icon-wrap">
-              <div class="step-icon">📅</div>
+              <div class="step-icon">
+                <Calendar class="w-8 h-8 vibrant-icon icon-vibrant-calendar" />
+              </div>
               <div class="step-number">2</div>
             </div>
             <h4>Book</h4>
@@ -228,7 +239,9 @@
           </div>
           <div class="step-card" data-reveal-child>
             <div class="step-icon-wrap">
-              <div class="step-icon">🎉</div>
+              <div class="step-icon">
+                <PartyPopper class="w-8 h-8 vibrant-icon icon-vibrant-revenue" />
+              </div>
               <div class="step-number">3</div>
             </div>
             <h4>Enjoy</h4>
@@ -258,6 +271,27 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import {
+  Sun,
+  CloudSun,
+  Sunset,
+  Moon,
+  TowerControl as Tower,
+  Flower,
+  Landmark,
+  Building,
+  Castle,
+  Lamp,
+  Home,
+  Tent,
+  Palette,
+  DoorOpen,
+  Star,
+  Search,
+  Calendar,
+  PartyPopper,
+  Zap
+} from 'lucide-vue-next'
 import { api } from '@/api/client'
 import { useTimeTheme } from '@/composables/useTimeTheme'
 import { useScrollReveal } from '@/composables/useScrollReveal'
@@ -267,6 +301,34 @@ import type { Listing } from '@/types'
 const router = useRouter()
 const { theme } = useTimeTheme()
 useScrollReveal({ staggerDelay: 100 })
+
+const iconMap: Record<string, any> = {
+  Sun,
+  CloudSun,
+  Sunset,
+  Moon
+}
+
+const destIconMap: Record<string, any> = {
+  Tower,
+  Flower,
+  Landmark,
+  Building,
+  Castle,
+  Lamp
+}
+
+const catIconMap: Record<string, any> = {
+  Home,
+  Building,
+  Landmark,
+  Tent,
+  Palette,
+  DoorOpen
+}
+
+function getDestIcon(icon: string) { return destIconMap[icon] || Landmark }
+function getCatIcon(icon: string) { return catIconMap[icon] || Home }
 
 const searchQuery = ref('')
 const checkIn = ref('')
@@ -293,24 +355,24 @@ const mapPins = [
 ]
 
 const destinationTags = [
-  { name: 'Tokyo', emoji: '🗼' },
-  { name: 'Bali', emoji: '🌺' },
-  { name: 'Bangkok', emoji: '🛕' },
-  { name: 'Seoul', emoji: '🏙️' },
-  { name: 'Jaipur', emoji: '🏰' },
-  { name: 'Singapore', emoji: '🌆' },
-  { name: 'Hanoi', emoji: '🏮' },
+  { name: 'Tokyo', icon: 'Tower' },
+  { name: 'Bali', icon: 'Flower' },
+  { name: 'Bangkok', icon: 'Landmark' },
+  { name: 'Seoul', icon: 'Building' },
+  { name: 'Jaipur', icon: 'Castle' },
+  { name: 'Singapore', icon: 'Building' },
+  { name: 'Hanoi', icon: 'Lamp' },
 ]
 
 const categories = [
-  { type: 'ALL', label: 'All', icon: '🏠' },
-  { type: 'APARTMENT', label: 'Apartments', icon: '🏢' },
-  { type: 'HOUSE', label: 'Houses', icon: '🏡' },
-  { type: 'VILLA', label: 'Villas', icon: '🏛️' },
-  { type: 'COTTAGE', label: 'Cottages', icon: '🛖' },
-  { type: 'STUDIO', label: 'Studios', icon: '🎨' },
-  { type: 'ROOM', label: 'Rooms', icon: '🚪' },
-  { type: 'LOFT', label: 'Lofts', icon: '🏗️' },
+  { type: 'ALL', label: 'All', icon: 'Home' },
+  { type: 'APARTMENT', label: 'Apartments', icon: 'Building' },
+  { type: 'HOUSE', label: 'Houses', icon: 'Home' },
+  { type: 'VILLA', label: 'Villas', icon: 'Landmark' },
+  { type: 'COTTAGE', label: 'Cottages', icon: 'Tent' },
+  { type: 'STUDIO', label: 'Studios', icon: 'Palette' },
+  { type: 'ROOM', label: 'Rooms', icon: 'DoorOpen' },
+  { type: 'LOFT', label: 'Lofts', icon: 'Building' },
 ]
 
 const filteredListings = computed(() => {
