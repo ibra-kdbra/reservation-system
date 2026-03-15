@@ -789,6 +789,37 @@ button {
   animation-fill-mode: both;
 }
 
+/* ===== VIBRANT ICONS ===== */
+.vibrant-icon {
+  transition: all var(--transition-bounce);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stat-card:hover .vibrant-icon,
+.stat-icon:hover .vibrant-icon {
+  transform: scale(1.2) rotate(8deg);
+  filter: drop-shadow(0 0 8px currentColor);
+}
+
+.icon-vibrant-users { color: #3b82f6; }
+.icon-vibrant-home { color: #10b981; }
+.icon-vibrant-calendar { color: #f59e0b; }
+.icon-vibrant-revenue { color: #8b5cf6; }
+.icon-vibrant-star { color: #facc15; }
+.icon-vibrant-success { color: var(--color-success); }
+.icon-vibrant-error { color: var(--color-error); }
+
+@keyframes icon-bounce {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.animate-icon-bounce {
+  animation: icon-bounce 2s infinite ease-in-out;
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
   h1 {
