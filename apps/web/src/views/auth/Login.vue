@@ -7,9 +7,18 @@
           <h1>Welcome Back</h1>
           <p>Log in to manage your bookings, review your stays, and discover new destinations.</p>
           <div class="brand-features">
-            <div class="feature">✨ <span>Instant booking confirmation</span></div>
-            <div class="feature">🔒 <span>Secure & encrypted</span></div>
-            <div class="feature">💳 <span>Flexible cancellation</span></div>
+            <div class="feature">
+              <Sparkles class="w-4 h-4 text-yellow-300" />
+              <span>Instant booking confirmation</span>
+            </div>
+            <div class="feature">
+              <ShieldCheck class="w-4 h-4 text-green-300" />
+              <span>Secure & encrypted</span>
+            </div>
+            <div class="feature">
+              <CreditCard class="w-4 h-4 text-blue-300" />
+              <span>Flexible cancellation</span>
+            </div>
           </div>
         </div>
       </div>
@@ -24,7 +33,9 @@
             <div class="form-group">
               <label for="email">Email Address</label>
               <div class="input-wrap">
-                <span class="input-icon">📧</span>
+                <span class="input-icon">
+                  <Mail class="w-4 h-4 text-gray-400" />
+                </span>
                 <input id="email" v-model="email" type="email" required placeholder="your@email.com"
                   class="form-input with-icon" />
               </div>
@@ -33,11 +44,13 @@
             <div class="form-group">
               <label for="password">Password</label>
               <div class="input-wrap">
-                <span class="input-icon">🔒</span>
+                <span class="input-icon">
+                  <Lock class="w-4 h-4 text-gray-400" />
+                </span>
                 <input id="password" v-model="password" :type="showPassword ? 'text' : 'password'" required
                   placeholder="••••••••" class="form-input with-icon" />
                 <button type="button" class="toggle-pass" @click="showPassword = !showPassword">
-                  {{ showPassword ? '🙈' : '👁️' }}
+                  <component :is="showPassword ? EyeOff : Eye" class="w-4 h-4 text-gray-400" />
                 </button>
               </div>
             </div>
@@ -58,10 +71,10 @@
 
           <div class="social-buttons">
             <button class="btn btn-secondary social-btn">
-              <span>G</span> Google
+              <Github class="w-4 h-4 mr-2" /> Google
             </button>
             <button class="btn btn-secondary social-btn">
-              <span>🍎</span> Apple
+              <Apple class="w-4 h-4 mr-2" /> Apple
             </button>
           </div>
 
@@ -78,6 +91,17 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import {
+  Sparkles,
+  ShieldCheck,
+  CreditCard,
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  Github,
+  Apple
+} from 'lucide-vue-next'
 import { useAuthStore } from '@/stores/auth'
 import { useToast } from '@/composables/useToast'
 import MagneticButton from '@/components/ui/MagneticButton.vue'
@@ -100,7 +124,7 @@ async function handleLogin() {
 
   try {
     await authStore.login(email.value, password.value)
-    toast.success('Welcome back! 🎉')
+    toast.success('Welcome back!')
     const redirect = (route.query.redirect as string) || '/'
     router.push(redirect)
   } catch (err: any) {
