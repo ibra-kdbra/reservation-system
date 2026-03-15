@@ -10,6 +10,7 @@ import {
   MinLength,
   MaxLength,
 } from 'class-validator';
+import { Transform } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   PropertyType,
@@ -362,6 +363,7 @@ export class SearchListingsDto {
   @IsArray()
   @IsOptional()
   @IsString({ each: true })
+  @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
   amenities?: string[];
 
   @ApiPropertyOptional({ enum: PropertyType })
