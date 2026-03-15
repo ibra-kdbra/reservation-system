@@ -188,8 +188,8 @@ function formatDate(dateStr: string) {
 
 onMounted(async () => {
     try {
-        const { data } = await api.getMyListings()
-        myListings.value = data
+        const { data: wrapper } = await api.getMyListings()
+        myListings.value = wrapper.data
     } catch (err) {
         console.error('Failed to load listings:', err)
     } finally {
@@ -197,8 +197,8 @@ onMounted(async () => {
     }
 
     try {
-        const { data } = await api.getHostBookings()
-        hostBookings.value = data
+        const { data: wrapper } = await api.getHostBookings()
+        hostBookings.value = wrapper.data
     } catch (err) {
         console.error('Failed to load bookings:', err)
     } finally {
