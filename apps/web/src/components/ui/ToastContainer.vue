@@ -10,10 +10,10 @@
           @click="remove(toast.id)"
         >
           <div class="toast-icon">
-            <span v-if="toast.type === 'success'">✓</span>
-            <span v-else-if="toast.type === 'error'">✕</span>
-            <span v-else-if="toast.type === 'warning'">⚠</span>
-            <span v-else>ℹ</span>
+            <CheckCircle2 v-if="toast.type === 'success'" class="w-4 h-4" />
+            <XCircle v-else-if="toast.type === 'error'" class="w-4 h-4" />
+            <AlertTriangle v-else-if="toast.type === 'warning'" class="w-4 h-4" />
+            <Info v-else class="w-4 h-4" />
           </div>
           <div class="toast-content">
             <p class="toast-message">{{ toast.message }}</p>
@@ -30,6 +30,12 @@
 </template>
 
 <script setup lang="ts">
+import {
+  CheckCircle2,
+  XCircle,
+  AlertTriangle,
+  Info
+} from 'lucide-vue-next'
 import { useToast } from '@/composables/useToast'
 
 const { toasts, remove } = useToast()
