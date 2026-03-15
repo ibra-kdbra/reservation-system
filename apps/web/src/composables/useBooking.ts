@@ -58,11 +58,11 @@ export function useBooking(listingId: string, pricePerNight: number) {
                 specialRequests: bookingData.value.specialRequests
             }
 
-            const { data } = await api.createBooking(payload)
+            const { data: wrapper } = await api.createBooking(payload)
             // Mock payment delay
             await new Promise(resolve => setTimeout(resolve, 1500))
 
-            router.push({ name: 'booking-confirmation', params: { id: data.id } })
+            router.push({ name: 'booking-confirmation', params: { bookingId: wrapper.data.id } })
         } catch (err: any) {
             // Global interceptor already shows a toast, but we still want the local error ref
             console.error('Booking failed', err)
