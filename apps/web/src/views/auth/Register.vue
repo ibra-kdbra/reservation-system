@@ -7,9 +7,18 @@
           <h1>Join NestAsia</h1>
           <p>Create an account to start booking unique stays and experiences around the world.</p>
           <div class="brand-features">
-            <div class="feature">🌍 <span>Access 10,000+ listings worldwide</span></div>
-            <div class="feature">💰 <span>Best price guarantee</span></div>
-            <div class="feature">🏆 <span>Trusted by millions</span></div>
+            <div class="feature">
+              <Globe class="w-4 h-4 text-blue-300" />
+              <span>Access 10,000+ listings worldwide</span>
+            </div>
+            <div class="feature">
+              <DollarSign class="w-4 h-4 text-green-300" />
+              <span>Best price guarantee</span>
+            </div>
+            <div class="feature">
+              <Trophy class="w-4 h-4 text-yellow-300" />
+              <span>Trusted by millions</span>
+            </div>
           </div>
         </div>
       </div>
@@ -77,8 +86,8 @@
           </div>
 
           <div class="social-buttons">
-            <button class="btn btn-secondary social-btn"><span>G</span> Google</button>
-            <button class="btn btn-secondary social-btn"><span>🍎</span> Apple</button>
+            <button class="btn btn-secondary social-btn"><Github class="w-4 h-4 mr-2" /> Google</button>
+            <button class="btn btn-secondary social-btn"><Apple class="w-4 h-4 mr-2" /> Apple</button>
           </div>
 
           <p class="auth-switch">
@@ -94,6 +103,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { Globe, DollarSign, Trophy, Github, Apple } from 'lucide-vue-next'
 import { useAuthStore } from '@/stores/auth'
 import { useToast } from '@/composables/useToast'
 import MagneticButton from '@/components/ui/MagneticButton.vue'
@@ -150,7 +160,7 @@ async function handleRegister() {
       firstName: firstName.value,
       lastName: lastName.value,
     })
-    toast.success('Account created! Welcome to NestAsia 🎉')
+    toast.success('Account created! Welcome to NestAsia')
     router.push('/')
   } catch (err: any) {
     error.value = err.response?.data?.message || 'Registration failed. Please try again.'
