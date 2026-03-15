@@ -10,7 +10,9 @@ import {
   UseGuards,
   HttpCode,
   HttpStatus,
+  UseInterceptors,
 } from '@nestjs/common';
+import { CacheInterceptor, CacheKey, CacheTTL } from '@nestjs/cache-manager';
 import { ListingService } from './listing.service';
 import {
   CreateListingDto,
@@ -34,6 +36,9 @@ export class ListingController {
   }
 
   @Get('search')
+  @UseInterceptors(CacheInterceptor)
+  @CacheKey('listing_search')
+  @CacheTTL(600) // 10 minutes
   async searchListings(@Query() dto: SearchListingsDto) {
     return this.listingService.searchListings(dto);
   }
@@ -61,20 +66,14 @@ export class ListingController {
 
   @Post(':id/publish')
   @UseGuards(JwtAuthGuard)
-  async publishListing(
-    @Param('id') id: string,
-    @GetUser('id') hostId: string,
-  ) {
+  async publishListing(@Param('id') id: string, @GetUser('id') hostId: string) {
     return this.listingService.publishListing(id, hostId);
   }
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
-  async deleteListing(
-    @Param('id') id: string,
-    @GetUser('id') hostId: string,
-  ) {
+  async deleteListing(@Param('id') id: string, @GetUser('id') hostId: string) {
     return this.listingService.deleteListing(id, hostId);
   }
 }

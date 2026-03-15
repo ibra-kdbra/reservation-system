@@ -14,7 +14,7 @@ export class PrismaService
       'postgresql://reservation_user:reservation_pass@localhost:5432/reservation_db';
 
     const pool = new Pool({ connectionString });
-    const adapter = new PrismaPg(pool);
+    const adapter = new PrismaPg(pool as any);
 
     super({ adapter });
   }
@@ -42,10 +42,16 @@ export class PrismaService
 
     return Promise.all(
       models.map((modelKey) => {
-        const model = this[modelKey as keyof typeof this];
-        if (model && typeof model === 'object' && 'deleteMany' in model) {
-          return (model as any).deleteMany();
+        const model = this[modelKey as keyof this];
+        if (
+          model &&
+          typeof model === 'object' &&
+          'deleteMany' in model &&
+          typeof model.deleteMany === 'function'
+        ) {
+          return model.deleteMany();
         }
+        return Promise.resolve();
       }),
     );
   }

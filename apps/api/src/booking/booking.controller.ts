@@ -38,10 +38,7 @@ export class BookingController {
   }
 
   @Get(':id')
-  async getBookingById(
-    @Param('id') id: string,
-    @GetUser('id') userId: string,
-  ) {
+  async getBookingById(@Param('id') id: string, @GetUser('id') userId: string) {
     return this.bookingService.getBookingById(id, userId);
   }
 
@@ -52,15 +49,16 @@ export class BookingController {
     @GetUser('id') userId: string,
     @Body() dto: CancelBookingDto,
   ) {
-    return this.bookingService.cancelBooking(id, userId, dto.cancellationReason);
+    return this.bookingService.cancelBooking(
+      id,
+      userId,
+      dto.cancellationReason,
+    );
   }
 
   @Put(':id/confirm')
   @HttpCode(HttpStatus.OK)
-  async confirmBooking(
-    @Param('id') id: string,
-    @GetUser('id') hostId: string,
-  ) {
+  async confirmBooking(@Param('id') id: string, @GetUser('id') hostId: string) {
     return this.bookingService.confirmBooking(id, hostId);
   }
 }

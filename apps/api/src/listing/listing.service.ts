@@ -9,10 +9,11 @@ import {
   UpdateListingDto,
   SearchListingsDto,
 } from './dto/listing.dto';
+import { Listing } from '@nest-asia/types';
 
 @Injectable()
 export class ListingService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   /**
    * Create a new listing
@@ -22,15 +23,15 @@ export class ListingService {
 
     const listing = await this.prisma.listing.create({
       data: {
-        ...listingData,
+        ...(listingData as any),
         hostId,
         status: 'DRAFT',
         amenities: amenityIds
           ? {
-            create: amenityIds.map((amenityId) => ({
-              amenity: { connect: { id: amenityId } },
-            })),
-          }
+              create: amenityIds.map((amenityId) => ({
+                amenity: { connect: { id: amenityId } },
+              })),
+            }
           : undefined,
       },
       include: {
@@ -49,8 +50,7 @@ export class ListingService {
         },
       },
     });
-
-    return listing;
+    return listing as unknown as Listing;
   }
 
   /**
@@ -132,8 +132,10 @@ export class ListingService {
     if (city) where.city = { contains: city, mode: 'insensitive' };
     if (country) where.country = { contains: country, mode: 'insensitive' };
     if (guests) where.maxGuests = { gte: guests };
-    if (minPrice) where.pricePerNight = { ...where.pricePerNight, gte: minPrice };
-    if (maxPrice) where.pricePerNight = { ...where.pricePerNight, lte: maxPrice };
+    if (minPrice)
+      where.pricePerNight = { ...where.pricePerNight, gte: minPrice };
+    if (maxPrice)
+      where.pricePerNight = { ...where.pricePerNight, lte: maxPrice };
     if (propertyType) where.propertyType = propertyType;
     if (bedrooms) where.bedrooms = { gte: bedrooms };
     if (bathrooms) where.bathrooms = { gte: bathrooms };
@@ -209,7 +211,7 @@ export class ListingService {
     ]);
 
     return {
-      listings,
+      listings: listings.map((l: any) => l as unknown as Listing),
       total,
       limit,
       offset,
@@ -220,10 +222,9 @@ export class ListingService {
   /**
    * Get host's listings
    */
-  async getHostListings(hostId: string) {
+  async getHostListings(hostId: string): Promise<Listing[]> {
     const listings = await this.prisma.listing.findMany({
       where: { hostId },
-      orderBy: { createdAt: 'desc' },
       include: {
         amenities: {
           include: {
@@ -232,14 +233,17 @@ export class ListingService {
         },
       },
     });
-
-    return listings;
+    return listings as unknown as Listing[];
   }
 
   /**
    * Update listing
    */
-  async updateListing(listingId: string, hostId: string, dto: UpdateListingDto) {
+  async updateListing(
+    listingId: string,
+    hostId: string,
+    dto: UpdateListingDto,
+  ) {
     // Check if listing exists and belongs to host
     const listing = await this.prisma.listing.findUnique({
       where: { id: listingId },
@@ -253,9 +257,10 @@ export class ListingService {
       throw new ForbiddenException('You can only update your own listings');
     }
 
+    const { ...updateData } = dto;
     const updated = await this.prisma.listing.update({
       where: { id: listingId },
-      data: dto,
+      data: updateData as any, // Cast to avoid specific Prisma XOR type issues with shared types
       include: {
         amenities: {
           include: {

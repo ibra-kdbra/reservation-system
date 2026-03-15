@@ -25,42 +25,54 @@ export class AuthController {
 
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
-  async register(@Body() dto: RegisterDto, @Res({ passthrough: true }) res: Response) {
+  async register(
+    @Body() dto: RegisterDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     const result = await this.authService.register(dto);
-    
+
     // Set httpOnly cookies
     this.setAuthCookies(res, result.accessToken, result.refreshToken);
-    
+
     // Return user without tokens
     return { user: result.user };
   }
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
-  async login(@Body() dto: LoginDto, @Res({ passthrough: true }) res: Response) {
+  async login(
+    @Body() dto: LoginDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     const result = await this.authService.login(dto);
-    
+
     // Set httpOnly cookies
     this.setAuthCookies(res, result.accessToken, result.refreshToken);
-    
+
     // Return user without tokens
     return { user: result.user };
   }
 
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
-  async refreshTokens(@Body() dto: RefreshTokenDto, @GetUser('id') userId: string) {
+  async refreshTokens(
+    @Body() dto: RefreshTokenDto,
+    @GetUser('id') userId: string,
+  ) {
     return this.authService.refreshTokens(userId, dto.refreshToken);
   }
 
   @Post('logout')
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
-  async logout(@GetUser('id') userId: string, @Res({ passthrough: true }) res: Response) {
+  async logout(
+    @GetUser('id') userId: string,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     // Clear cookies
     res.clearCookie('accessToken');
     res.clearCookie('refreshToken');
-    
+
     return this.authService.logout(userId);
   }
 
@@ -84,7 +96,11 @@ export class AuthController {
     );
   }
 
-  private setAuthCookies(res: Response, accessToken: string, refreshToken: string) {
+  private setAuthCookies(
+    res: Response,
+    accessToken: string,
+    refreshToken: string,
+  ) {
     // Access token - short lived (15 minutes)
     res.cookie('accessToken', accessToken, {
       httpOnly: true,

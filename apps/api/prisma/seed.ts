@@ -12,7 +12,7 @@ const connectionString =
   'postgresql://reservation_user:reservation_pass@localhost:5432/reservation_db';
 
 const pool = new Pool({ connectionString });
-const adapter = new PrismaPg(pool);
+const adapter = new PrismaPg(pool as any);
 const prisma = new PrismaClient({ adapter });
 
 async function main() {

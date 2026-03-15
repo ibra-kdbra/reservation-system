@@ -15,7 +15,15 @@ export class BookingService {
    * Create a new booking
    */
   async createBooking(guestId: string, dto: CreateBookingDto) {
-    const { listingId, checkIn, checkOut, adults, children, infants, specialRequests } = dto;
+    const {
+      listingId,
+      checkIn,
+      checkOut,
+      adults,
+      children,
+      infants,
+      specialRequests,
+    } = dto;
 
     // Validate dates
     const checkInDate = new Date(checkIn);
@@ -27,7 +35,9 @@ export class BookingService {
     }
 
     if (checkOutDate <= checkInDate) {
-      throw new BadRequestException('Check-out date must be after check-in date');
+      throw new BadRequestException(
+        'Check-out date must be after check-in date',
+      );
     }
 
     // Get listing
@@ -46,7 +56,9 @@ export class BookingService {
     // Check if guest count exceeds max
     const totalGuests = adults + (children || 0) + (infants || 0);
     if (totalGuests > listing.maxGuests) {
-      throw new BadRequestException(`Maximum ${listing.maxGuests} guests allowed`);
+      throw new BadRequestException(
+        `Maximum ${listing.maxGuests} guests allowed`,
+      );
     }
 
     // Check for booking conflicts
@@ -78,7 +90,9 @@ export class BookingService {
     });
 
     if (conflictingBooking) {
-      throw new BadRequestException('Listing is not available for selected dates');
+      throw new BadRequestException(
+        'Listing is not available for selected dates',
+      );
     }
 
     // Calculate nights and pricing
@@ -87,11 +101,15 @@ export class BookingService {
     );
 
     if (listing.minNights && nights < listing.minNights) {
-      throw new BadRequestException(`Minimum ${listing.minNights} nights required`);
+      throw new BadRequestException(
+        `Minimum ${listing.minNights} nights required`,
+      );
     }
 
     if (listing.maxNights && nights > listing.maxNights) {
-      throw new BadRequestException(`Maximum ${listing.maxNights} nights allowed`);
+      throw new BadRequestException(
+        `Maximum ${listing.maxNights} nights allowed`,
+      );
     }
 
     const pricePerNight = Number(listing.pricePerNight);

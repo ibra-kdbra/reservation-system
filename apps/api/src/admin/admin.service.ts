@@ -7,22 +7,27 @@ export class AdminService {
   constructor(private prisma: PrismaService) {}
 
   async getStats() {
-    const [userCount, listingCount, bookingCount, revenueResult, usersJoinedToday] =
-      await Promise.all([
-        this.prisma.user.count(),
-        this.prisma.listing.count(),
-        this.prisma.booking.count(),
-        this.prisma.booking.aggregate({
-          _sum: { totalPrice: true },
-          where: { status: 'CONFIRMED' }, // Only confirmed bookings count as revenue? Or COMPLETED.
-        }),
-        this.prisma.user.count({
-          where: {
-            // Check createdAt >= start of today (mock logic for demo)
-            // For now just return count
-          },
-        }),
-      ]);
+    const [
+      userCount,
+      listingCount,
+      bookingCount,
+      revenueResult,
+      usersJoinedToday,
+    ] = await Promise.all([
+      this.prisma.user.count(),
+      this.prisma.listing.count(),
+      this.prisma.booking.count(),
+      this.prisma.booking.aggregate({
+        _sum: { totalPrice: true },
+        where: { status: 'CONFIRMED' }, // Only confirmed bookings count as revenue? Or COMPLETED.
+      }),
+      this.prisma.user.count({
+        where: {
+          // Check createdAt >= start of today (mock logic for demo)
+          // For now just return count
+        },
+      }),
+    ]);
 
     return {
       users: userCount,
