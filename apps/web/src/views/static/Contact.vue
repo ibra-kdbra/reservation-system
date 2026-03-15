@@ -7,21 +7,27 @@
 
                 <div class="grid">
                     <div class="contact-card">
-                        <div class="icon">💬</div>
+                        <div class="icon">
+                            <MessagesSquare class="w-12 h-12 mx-auto vibrant-icon icon-vibrant-users" />
+                        </div>
                         <h3>Chat with us</h3>
                         <p>Our support team is available 24/7 via live chat.</p>
                         <button class="btn btn-primary">Start Chat</button>
                     </div>
 
                     <div class="contact-card">
-                        <div class="icon">📧</div>
+                        <div class="icon">
+                            <Mail class="w-12 h-12 mx-auto vibrant-icon icon-vibrant-home" />
+                        </div>
                         <h3>Email Support</h3>
                         <p>Send us an email and we'll get back to you within 24 hours.</p>
                         <a href="mailto:support@nestasia.com" class="link">support@nestasia.com</a>
                     </div>
 
                     <div class="contact-card">
-                        <div class="icon">📞</div>
+                        <div class="icon">
+                            <Phone class="w-12 h-12 mx-auto vibrant-icon icon-vibrant-calendar" />
+                        </div>
                         <h3>Phone Support</h3>
                         <p>Available 9AM - 6PM (SGT) for urgent inquiries.</p>
                         <a href="tel:+6512345678" class="link">+65 1234 5678</a>
@@ -31,6 +37,9 @@
         </div>
     </div>
 </template>
+<script setup lang="ts">
+import { MessagesSquare, Mail, Phone } from 'lucide-vue-next'
+</script>
 
 <style scoped>
 .static-page {
