@@ -51,9 +51,16 @@ export function useListingSearch() {
             if (filters.checkIn) params.checkIn = filters.checkIn
             if (filters.checkOut) params.checkOut = filters.checkOut
             if (filters.propertyType) params.propertyType = filters.propertyType
-            if (filters.minPrice) params.minPrice = filters.minPrice
-            if (filters.maxPrice) params.maxPrice = filters.maxPrice
-            if (filters.amenities && filters.amenities.length > 0) params.amenities = filters.amenities
+            
+            if (filters.minPrice !== null && filters.minPrice !== undefined) {
+                params.minPrice = filters.minPrice
+            }
+            if (filters.maxPrice !== null && filters.maxPrice !== undefined) {
+                params.maxPrice = filters.maxPrice
+            }
+            if (filters.amenities && filters.amenities.length > 0) {
+                params.amenities = filters.amenities
+            }
 
             const { data: wrapper } = await api.searchListings(params)
             listings.value = wrapper.data.listings || []
