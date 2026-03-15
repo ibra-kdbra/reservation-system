@@ -16,22 +16,30 @@
       <!-- Stats -->
       <div class="stats-grid">
         <div class="stat-card">
-          <div class="stat-icon">📅</div>
+          <div class="stat-icon">
+            <Calendar class="w-6 h-6 vibrant-icon icon-vibrant-calendar" />
+          </div>
           <div class="stat-value">{{ stats.totalBookings || 0 }}</div>
           <div class="stat-label">Bookings</div>
         </div>
         <div class="stat-card">
-          <div class="stat-icon">⭐</div>
+          <div class="stat-icon">
+            <Star class="w-6 h-6 vibrant-icon icon-vibrant-star" />
+          </div>
           <div class="stat-value">{{ stats.reviewsGiven || 0 }}</div>
           <div class="stat-label">Reviews</div>
         </div>
         <div class="stat-card">
-          <div class="stat-icon">🏠</div>
+          <div class="stat-icon">
+            <Home class="w-6 h-6 vibrant-icon icon-vibrant-home" />
+          </div>
           <div class="stat-value">{{ stats.listings || 0 }}</div>
           <div class="stat-label">Listings</div>
         </div>
         <div class="stat-card">
-          <div class="stat-icon">📅</div>
+          <div class="stat-icon">
+            <CalendarDays class="w-6 h-6 vibrant-icon icon-vibrant-success" />
+          </div>
           <div class="stat-value">{{ memberSince }}</div>
           <div class="stat-label">Member Since</div>
         </div>
@@ -77,6 +85,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
+import { Calendar, Star, Home, CalendarDays } from 'lucide-vue-next'
 import { useAuthStore } from '@/stores/auth'
 import { api } from '@/api/client'
 
@@ -110,8 +119,8 @@ onMounted(async () => {
   }
 
   try {
-    const { data } = await api.getUserStats()
-    stats.value = data
+    const { data: wrapper } = await api.getUserStats()
+    stats.value = wrapper.data
   } catch {
     // Stats not available
   }
