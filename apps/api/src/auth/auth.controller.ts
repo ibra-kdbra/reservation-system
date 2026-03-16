@@ -34,6 +34,15 @@ export class AuthController {
     // Set httpOnly cookies
     this.setAuthCookies(res, result.accessToken, result.refreshToken);
 
+    // Return user and tokens for testing if in test mode
+    if (process.env.NODE_ENV === 'test') {
+      return {
+        user: result.user,
+        accessToken: result.accessToken,
+        refreshToken: result.refreshToken,
+      };
+    }
+
     // Return user without tokens
     return { user: result.user };
   }
@@ -48,6 +57,15 @@ export class AuthController {
 
     // Set httpOnly cookies
     this.setAuthCookies(res, result.accessToken, result.refreshToken);
+
+    // Return user and tokens for testing if in test mode
+    if (process.env.NODE_ENV === 'test') {
+      return {
+        user: result.user,
+        accessToken: result.accessToken,
+        refreshToken: result.refreshToken,
+      };
+    }
 
     // Return user without tokens
     return { user: result.user };
