@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div class="app-root">
     <Navbar />
     <div class="page-content">
       <router-view v-slot="{ Component, route }">
@@ -39,7 +39,7 @@ onMounted(async () => {
 </script>
 
 <style>
-#app {
+.app-root {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
