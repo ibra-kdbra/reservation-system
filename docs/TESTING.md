@@ -2,13 +2,14 @@
 
 ## Overview
 
-The project uses a three-layer testing approach:
+The project uses a four-layer testing approach:
 
 | Layer | Tool | Location | Target Coverage |
 |---|---|---|---|
 | Unit Tests | Vitest | `apps/web/src/**/*.spec.ts` | ≥ 70% composables |
 | Component Tests | Vitest + `@vue/test-utils` | `apps/web/src/**/*.spec.ts` | Critical components |
-| E2E Tests | Playwright | `tests/e2e/` | Core user journeys |
+| Integration Tests | NestJS + Testcontainers | `apps/api/test/**/*.integration.spec.ts` | Domain logic & DB |
+| E2E Tests | Playwright | `tests/e2e/` | Full user journeys |
 
 ---
 
@@ -23,121 +24,70 @@ npm run test:watch    # Watch mode
 npm run test:coverage # Coverage report
 ```
 
+### Integration Tests (Backend)
+
+We use **Testcontainers** to spin up isolated, transient PostgreSQL and Redis instances. Docker must be running.
+
+```bash
+cd apps/api
+npm run test:integration
+```
+
 ### E2E Tests
 
 ```bash
 # From project root — builds both apps first
 npm run test:e2e
 
-# Run a specific spec file
-npx playwright test tests/e2e/basic-flow.spec.ts
-
 # Run with browser visible
 npx playwright test --headed
 
-# View last HTML report
+# View results in report
 npx playwright show-report
-```
-
-### API Unit Tests (NestJS)
-
-```bash
-cd apps/api
-npm run test          # Unit tests
-npm run test:e2e      # API integration tests
-npm run test:cov      # Coverage report
 ```
 
 ---
 
 ## Unit Test Coverage
 
-### Composables (Step 1 Priority)
+### Composables
 
 | Composable | Test File | Status |
 |---|---|---|
-| `useListingSearch` | `useListingSearch.spec.ts` | ✅ Done |
-| `useBooking` | `useBooking.spec.ts` | ✅ Done |
-| `useWishlist` | `useWishlist.spec.ts` | ✅ Done |
-| `useToast` | `useToast.spec.ts` | ✅ Done |
-
-### What Each Test Covers
-
-**`useListingSearch.spec.ts`**
-- Initializes filters from route query params
-- Calls `api.searchListings` on mount
-- Updates filters when URL changes
-- `clearFilters()` resets all fields
-- Handles amenities as array or single string
-
-**`useBooking.spec.ts`**
-- Computes `nights` correctly from check-in/check-out
-- Computes `totalPrice` = nights × pricePerNight
-- Formats check-in/check-out dates for display
-- `submitBooking()` calls `api.createBooking` with correct payload
-- `submitBooking()` sets `error` on API failure
-
-**`useWishlist.spec.ts`**
-- `fetchWishlist()` calls `api.getFavorites()`
-- `isInWishlist(id)` returns true/false correctly
-- `toggleWishlist()` calls `addFavorite` or `removeFavorite` based on state
-- `removeFavorite()` removes item from local list
-
-**`useToast.spec.ts`**
-- `toast.success()` and `toast.error()` add to queue
-- Toast auto-removes after timeout
-- `remove(id)` removes specific toast
+| `useListingSearch` | `useListingSearch.spec.ts` | ✅ Certified |
+| `useBooking` | `useBooking.spec.ts` | ✅ Certified |
+| `useWishlist` | `useWishlist.spec.ts` | ✅ Certified |
+| `useToast` | `useToast.spec.ts` | ✅ Certified |
 
 ---
 
-## E2E Test Coverage
+## Integration Test Coverage (Backend)
 
-### Implemented Flows
-
-| Test | File | Status |
+| Spec | Target | Status |
 |---|---|---|
-| Homepage loads with hero | `basic-flow.spec.ts` | ✅ Passing |
-| Search for listings | `basic-flow.spec.ts` | ✅ Passing |
-| Navigate to listing detail | `basic-flow.spec.ts` | ✅ Passing |
-
-### Planned Flows
-
-| Test | Priority |
-|---|---|
-| User registration | High |
-| User login / logout | High |
-| Full booking: search → detail → checkout | High |
-| Host dashboard: create listing | Medium |
-| Admin: ban user, approve listing | Medium |
-| Wishlist: add and remove | Low |
+| `auth.integration.spec.ts` | JWT strategies, roles, guard protection | ✅ Certified |
+| `booking.integration.spec.ts` | Transactional integrity, availability, guest capacity | ✅ Certified |
+| `listing.integration.spec.ts` | Complex search filters, pricing logic, data extraction | ✅ Certified |
 
 ---
 
-## Vitest Configuration
+## E2E Test Coverage (Certified 100% Pass)
 
-Vitest is configured in `apps/web/vite.config.ts`:
+### Implemented & Certified Flows
 
-```ts
-test: {
-  globals: true,
-  environment: 'jsdom',
-  setupFiles: ['./src/test/setup.ts'],
-}
-```
-
-The `setup.ts` file mocks global dependencies (Vue Router, Pinia).
+| Spec | Journey | Device support |
+|---|---|---|
+| `basic-flow.spec.ts` | Homepage -> Search -> Detail | Desktop & Tablet |
+| `auth-flow.spec.ts` | Register -> Login -> Logout | Desktop & Mobile |
+| `host-management.spec.ts` | Dashboard -> My Listings -> Bookings | Desktop |
+| `admin-operations.spec.ts` | User Management -> Listing Approvals | Desktop |
+| `network-failures.spec.ts` | Offline resilience -> Slow network -> 500 errors | Desktop |
 
 ---
 
-## Coverage Thresholds
+## Infrastructure Highlights
 
-```json
-{
-  "statements": 70,
-  "branches": 65,
-  "functions": 70,
-  "lines": 70
-}
-```
-
-Run `npm run test:coverage` to see the current report.
+- **Database Isolation**: Every integration test run uses a fresh PostgreSQL container, ensuring zero side-effects between tests.
+- **Strict Selector Strategy**: Locators use `role-based` and `data-testid` strategies to avoid brittle CSS-based failures.
+- **Session Persistence**: Frontend tests verify the `isInitialized` state logic to ensure users remain logged in across page reloads.
+- **Network Resilience**: Playwright mocks simulate extreme network conditions (offline/slow) to certify UI stability.

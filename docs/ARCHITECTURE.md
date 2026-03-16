@@ -82,7 +82,8 @@ User Action → Vue Component → Composable → api/client.ts → Axios
 2. NestJS validates, creates JWT, sets **httpOnly cookie** (`access_token`)
 3. All subsequent requests send cookie automatically (`withCredentials: true`)
 4. Logout clears the cookie server-side → `POST /api/v1/auth/logout`
-5. Route guard (`router/index.ts`) checks `useAuthStore` on navigation
+5. Route guard (`router/index.ts`) waits for `isInitialized` state in `useAuthStore` to prevent guests redirection race conditions.
+6. Authentication state is persisted via httpOnly cookie, but verified on every page load by the API `/me` endpoint.
 
 ## Key Design Decisions
 
