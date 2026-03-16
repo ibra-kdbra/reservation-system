@@ -67,8 +67,8 @@
           </div>
         </template>
         <template v-else>
-          <router-link to="/login" class="btn btn-ghost btn-sm">Log In</router-link>
-          <router-link to="/register" class="btn btn-primary btn-sm">Sign Up</router-link>
+          <router-link to="/auth/login" class="btn btn-ghost btn-sm">Log In</router-link>
+          <router-link to="/auth/register" class="btn btn-primary btn-sm">Sign Up</router-link>
         </template>
 
         <!-- Mobile Menu Toggle -->
@@ -98,8 +98,8 @@
           <button class="mobile-link logout" @click="handleLogout">Log Out</button>
         </template>
         <template v-else>
-          <router-link to="/login" class="mobile-link" @click="showMobileMenu = false">Log In</router-link>
-          <router-link to="/register" class="mobile-link" @click="showMobileMenu = false">Sign Up</router-link>
+          <router-link to="/auth/login" class="mobile-link" @click="showMobileMenu = false">Log In</router-link>
+          <router-link to="/auth/register" class="mobile-link" @click="showMobileMenu = false">Sign Up</router-link>
         </template>
       </div>
     </Transition>
