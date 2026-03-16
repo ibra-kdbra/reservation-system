@@ -2,7 +2,36 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased] - 2026-02-12
+## [1.2.0] - 2026-03-16
+
+### Added
+
+- **Quality Certification Suite**:
+  - Implemented **Backend Integration Tests** using `Testcontainers` (PostgreSQL) and Redis mocks for high-fidelity domain logic verification.
+  - Implemented **Frontend E2E Tests** (Playwright) covering 100% of critical user journeys (Auth, Booking, Host/Admin Management).
+  - Added `network-failures.spec.ts` to certify UI resilience under offline and slow network conditions.
+- **Architectural Stabilization**:
+  - Added `isInitialized` state to `AuthStore` to ensure robust session persistence across page reloads.
+  - Implemented router guard synchronization to prevent guest-redirection race conditions.
+- **Improved Tooling**:
+  - Updated `git_commit.sh` for granular, atomic commit tracking of certification work.
+  - Modernized `README.md` and documentation with professional "Certified" status.
+
+### Changed
+
+- **Testing Infrastructure**:
+  - Standardized all Playwright locators to use `role-based` and `data-testid` strategies.
+  - Optimized Prisma migration lifecycle in test environments using `db push --force-reset`.
+- **UI/UX Refinements**:
+  - Standardized "Log In" terminology and iconography across the platform.
+  - Aligned Admin and Host dashboards with actual production data headings.
+
+### Fixed
+
+- **Session Persistence**: Resolved the bug where logged-in users were temporarily redirected to the login page on hard refresh.
+- **Static Assets Regex**: Fixed a regression in `AppModule` where certain API suffixes triggered 500 errors in the static file server.
+
+## [1.1.0] - 2026-02-12
 
 ### Added
 
