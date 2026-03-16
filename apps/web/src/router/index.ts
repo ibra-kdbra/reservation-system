@@ -14,13 +14,13 @@ const router = createRouter({
       component: () => import('../views/Home.vue'),
     },
     {
-      path: '/login',
+      path: '/auth/login',
       name: 'login',
       component: () => import('../views/auth/Login.vue'),
       meta: { requiresGuest: true },
     },
     {
-      path: '/register',
+      path: '/auth/register',
       name: 'register',
       component: () => import('../views/auth/Register.vue'),
       meta: { requiresGuest: true },
@@ -131,8 +131,13 @@ const router = createRouter({
 })
 
 // Navigation guards
-router.beforeEach((to, _from, next) => {
+router.beforeEach(async (to, _from, next) => {
   const authStore = useAuthStore()
+
+  // Wait for auth to initialize
+  if (!authStore.isInitialized) {
+    await authStore.fetchCurrentUser()
+  }
 
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
     next({ name: 'login', query: { redirect: to.fullPath } })
