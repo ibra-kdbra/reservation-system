@@ -34,7 +34,23 @@ async function main() {
   console.log('✅ Cleaned existing data');
 
   // ─── Users ───────────────────────────────────────
-  const hashedPassword = await bcrypt.hash('password123', 10);
+  const hashedPassword = await bcrypt.hash('Password123!', 10);
+
+  // 1. Create Admin
+  const admin = await prisma.user.create({
+    data: {
+      email: 'admin@example.com',
+      firstName: 'Admin',
+      lastName: 'User',
+      username: 'admin',
+      password: hashedPassword,
+      role: 'ADMIN',
+      status: 'ACTIVE',
+      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Admin',
+    },
+  });
+
+  console.log('✅ Created admin user');
 
   const hosts = [];
   for (const hostData of hostsData) {
