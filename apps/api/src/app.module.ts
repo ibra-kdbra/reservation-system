@@ -19,21 +19,30 @@ import { FavoriteModule } from './favorite/favorite.module';
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
+      ignoreEnvFile: process.env.NODE_ENV === 'test',
     }),
     CacheModule.registerAsync({
       isGlobal: true,
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => ({
-        store: await redisStore({
-          socket: {
-            host: configService.get('REDIS_HOST', 'localhost'),
-            port: parseInt(configService.get('REDIS_PORT', '6379'), 10),
-          },
-          password: configService.get('REDIS_PASSWORD'),
-          ttl: 600, // 10 minutes default
-        }),
-      }),
+      useFactory: async (configService: ConfigService) => {
+        if (configService.get('NODE_ENV') === 'test') {
+          return {
+            store: 'memory',
+            ttl: 600,
+          };
+        }
+        return {
+          store: await redisStore({
+            socket: {
+              host: configService.get('REDIS_HOST', 'localhost'),
+              port: parseInt(configService.get('REDIS_PORT', '6379'), 10),
+            },
+            password: configService.get('REDIS_PASSWORD'),
+            ttl: 600, // 10 minutes default
+          }),
+        };
+      },
     }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'client'),
