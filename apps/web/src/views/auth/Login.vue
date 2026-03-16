@@ -80,7 +80,7 @@
 
           <p class="auth-switch">
             Don't have an account?
-            <router-link to="/register">Sign up</router-link>
+            <router-link to="/auth/register">Sign up</router-link>
           </p>
         </div>
       </div>
