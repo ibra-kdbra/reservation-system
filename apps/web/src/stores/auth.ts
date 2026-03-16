@@ -14,6 +14,7 @@ interface User {
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(null)
   const isLoading = ref(false)
+  const isInitialized = ref(false)
 
   const isAuthenticated = computed(() => !!user.value)
 
@@ -65,6 +66,8 @@ export const useAuthStore = defineStore('auth', () => {
     } catch {
       // Not authenticated — this is expected for guests
       user.value = null
+    } finally {
+      isInitialized.value = true
     }
   }
 
@@ -72,6 +75,7 @@ export const useAuthStore = defineStore('auth', () => {
     user,
     isAuthenticated,
     isLoading,
+    isInitialized,
     login,
     register,
     logout,
