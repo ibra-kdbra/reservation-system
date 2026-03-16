@@ -92,7 +92,7 @@
 
           <p class="auth-switch">
             Already have an account?
-            <router-link to="/login">Log in</router-link>
+            <router-link to="/auth/login">Log in</router-link>
           </p>
         </div>
       </div>
